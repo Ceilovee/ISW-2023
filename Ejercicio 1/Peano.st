@@ -11,6 +11,10 @@ DenotativeObject subclass: #I
 I class
 	instanceVariableNames: 'next'!
 
+!I class methodsFor: 'as yet unclassified' stamp: 'cielo 8/26/2023 01:22:03'!
+* aNaturalNumber
+	^aNaturalNumber! !
+
 !I class methodsFor: 'as yet unclassified' stamp: 'CIELO 8/24/2023 21:04:16'!
 + aNaturalNumber
 	^aNaturalNumber next! !
@@ -22,7 +26,7 @@ next
   ^next! !
 
 
-!I class methodsFor: '--** private fileout/in **--' stamp: 'CIELO 8/25/2023 10:25:25'!
+!I class methodsFor: '--** private fileout/in **--' stamp: 'cielo 8/27/2023 00:43:31'!
 initializeCollaboratorsFromFile
 	"Auto generated method for loading purposes - Do not modify it"
 
@@ -42,13 +46,16 @@ DenotativeObject subclass: #II
 II class
 	instanceVariableNames: 'next previous'!
 
+!II class methodsFor: 'as yet unclassified' stamp: 'cielo 8/26/2023 01:21:48'!
+* aNaturalNumber
+	^aNaturalNumber previous * self + self! !
+
 !II class methodsFor: 'as yet unclassified' stamp: 'CIELO 8/24/2023 21:11:08'!
 + aNaturalNumber
 	^self previous + aNaturalNumber next ! !
 
-!II class methodsFor: 'as yet unclassified' stamp: 'CIELO 8/24/2023 21:58:20'!
+!II class methodsFor: 'as yet unclassified' stamp: 'cielo 8/27/2023 00:35:35'!
 - aNaturalNumber
-"IF MALO"
 (aNaturalNumber = I) ifTrue: [^self previous].
 	^self previous - aNaturalNumber previous.! !
 
@@ -68,7 +75,7 @@ previous: aNaturalNumber
 	previous := aNaturalNumber! !
 
 
-!II class methodsFor: '--** private fileout/in **--' stamp: 'CIELO 8/25/2023 10:25:25'!
+!II class methodsFor: '--** private fileout/in **--' stamp: 'cielo 8/27/2023 00:43:31'!
 initializeCollaboratorsFromFile
 	"Auto generated method for loading purposes - Do not modify it"
 
@@ -114,7 +121,7 @@ previous: aNaturalNumber
 	previous := aNaturalNumber! !
 
 
-!III class methodsFor: '--** private fileout/in **--' stamp: 'CIELO 8/25/2023 10:25:25'!
+!III class methodsFor: '--** private fileout/in **--' stamp: 'cielo 8/27/2023 00:43:31'!
 initializeCollaboratorsFromFile
 	"Auto generated method for loading purposes - Do not modify it"
 
@@ -160,7 +167,7 @@ previous: aNaturalNumber
 	previous := aNaturalNumber! !
 
 
-!IIII class methodsFor: '--** private fileout/in **--' stamp: 'CIELO 8/25/2023 10:25:26'!
+!IIII class methodsFor: '--** private fileout/in **--' stamp: 'cielo 8/27/2023 00:43:31'!
 initializeCollaboratorsFromFile
 	"Auto generated method for loading purposes - Do not modify it"
 
@@ -206,7 +213,7 @@ previous: aNaturalNumber
 	previous := aNaturalNumber! !
 
 
-!IIIII class methodsFor: '--** private fileout/in **--' stamp: 'CIELO 8/25/2023 10:25:26'!
+!IIIII class methodsFor: '--** private fileout/in **--' stamp: 'cielo 8/27/2023 00:43:31'!
 initializeCollaboratorsFromFile
 	"Auto generated method for loading purposes - Do not modify it"
 
