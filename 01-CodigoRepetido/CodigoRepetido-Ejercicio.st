@@ -46,32 +46,34 @@ test02RemovingCustomerShouldNotTakeMoreThan100Milliseconds
 
 ! !
 
-!CustomerBookTest methodsFor: 'testing' stamp: 'cielo 9/4/2023 22:03:48'!
+!CustomerBookTest methodsFor: 'testing' stamp: 'Alex 9/5/2023 17:39:21'!
 test03CanNotAddACustomerWithEmptyName 
 
-	| customerBook |
-			
+	| customerBook checksThatTheErrorIsTheCorrectOne|		
 	customerBook := CustomerBook new.
+	
+	checksThatTheErrorIsTheCorrectOne  := OrderedCollection new.
+	checksThatTheErrorIsTheCorrectOne add: [:anError | anError messageText = CustomerBook customerCanNotBeEmptyErrorMessage.].
+	checksThatTheErrorIsTheCorrectOne add: [:anError | customerBook isEmpty .].
+	
 
         self checkThatFails: [customerBook addCustomerNamed: ''.] 
-	withError: Error andAssertThis:[:anError | anError messageText = CustomerBook customerCanNotBeEmptyErrorMessage.] andThis:[customerBook isEmpty .].
+	withError: Error andAssertTheseConditions: checksThatTheErrorIsTheCorrectOne
 ! !
 
-!CustomerBookTest methodsFor: 'testing' stamp: 'HAW 8/28/2017 08:57:25'!
+!CustomerBookTest methodsFor: 'testing' stamp: 'Alex 9/5/2023 17:50:35'!
 test04CanNotRemoveAnInvalidCustomer
 	
-	| customerBook johnLennon |
-			
+	| customerBook johnLennon checksThatTheCustomersInTheBookAreCorrect|		
 	customerBook := CustomerBook new.
 	johnLennon := 'John Lennon'.
 	customerBook addCustomerNamed: johnLennon.
+	checksThatTheCustomersInTheBookAreCorrect := OrderedCollection new.
+	checksThatTheCustomersInTheBookAreCorrect  add: [:anError | customerBook numberOfCustomers = 1.].
+	checksThatTheCustomersInTheBookAreCorrect add: [:anError | (customerBook includesCustomerNamed: johnLennon) ].
+		self checkThatFails: [ customerBook removeCustomerNamed: 'Paul McCartney'.] withError: NotFound 
+	andAssertTheseConditions: checksThatTheCustomersInTheBookAreCorrect.
 	
-	[ customerBook removeCustomerNamed: 'Paul McCartney'.
-	self fail ]
-		on: NotFound 
-		do: [ :anError | 
-			self assert: customerBook numberOfCustomers = 1.
-			self assert: (customerBook includesCustomerNamed: johnLennon) ]
 ! !
 
 !CustomerBookTest methodsFor: 'testing' stamp: 'cielo 9/5/2023 00:05:20'!
@@ -147,6 +149,17 @@ test08CanNotSuspendAnAlreadySuspendedCustomer
 ! !
 
 
+!CustomerBookTest methodsFor: 'checkingErrorsAreShownCorrectly' stamp: 'Alex 9/5/2023 17:41:25'!
+checkThatFails: closureWithAnError withError: errorName andAssertTheseConditions: aCollectionOfConditions
+	
+	[ closureWithAnError value.
+	self fail ]
+		on: errorName
+		do: [ :anError | 
+			
+			aCollectionOfConditions do: [:aCondition| self assert: (aCondition value: anError)]. ].
+		! !
+
 !CustomerBookTest methodsFor: 'checkingErrorsAreShownCorrectly' stamp: 'cielo 9/4/2023 22:18:31'!
 checkThatFails: closureWithAnError withError: errorName andAssertThis:checkIsCorrectError andThis:reasonForFailing
 	
@@ -159,24 +172,34 @@ checkThatFails: closureWithAnError withError: errorName andAssertThis:checkIsCor
 		! !
 
 
-!CustomerBookTest methodsFor: 'checkingTimeExecution' stamp: 'cielo 9/4/2023 21:35:27'!
-executeThis: closure wontLastMoreThan: time
+!CustomerBookTest methodsFor: 'checkingTimeExecution' stamp: 'Alex 9/5/2023 16:50:27'!
+executeThis: aClosure wontLastMoreThan: time
 	|millisecondsBeforeRunning millisecondsAfterRunning|
 	
 	millisecondsBeforeRunning := Time millisecondClockValue * millisecond.
-	closure.
+	aClosure.
 	millisecondsAfterRunning := Time millisecondClockValue * millisecond.
 	
 	self assert: (millisecondsAfterRunning-millisecondsBeforeRunning) < (time * millisecond)! !
 
 
-!CustomerBookTest methodsFor: 'checkingAmountOfCustumers' stamp: 'cielo 9/5/2023 00:03:13'!
-thisCusumerBookhas: customerBook numberOfActiveCustumers: numberOfActiveCustumers numberOfSuspendedCustomers:numberOfSuspendedCustomers numberOfCustomers:numberOfCustomers 
-
+!CustomerBookTest methodsFor: 'checkingAmountOfCustumers' stamp: 'Alex 9/5/2023 17:14:07'!
+thisCusumerBookhas: customerBook numberOfActiveCustumers: numberOfActiveCustumers numberOfSuspendedCustomers:numberOfSuspendedCustomers numberOfCustomers:numberOfCustomers 	
 	self assert: numberOfActiveCustumers equals: customerBook numberOfActiveCustomers.
 	self assert: numberOfSuspendedCustomers equals: customerBook numberOfSuspendedCustomers.
 	self assert: numberOfCustomers equals: customerBook numberOfCustomers.
+
 ! !
+
+!CustomerBookTest methodsFor: 'checkingAmountOfCustumers' stamp: 'Alex 9/5/2023 17:57:30'!
+xx: yy z: ppp zzz: t
+	|y|
+	y := OrderedCollection new.
+	y add: [:anError | yy numberOfCustomers = 1.].
+	y add: [:anError | (yy includesCustomerNamed: ppp) ].
+	
+	self checkThatFails: [ yy removeCustomerNamed: t.] withError: NotFound 
+	andAssertTheseConditions: y.! !
 
 
 !classDefinition: #CustomerBook category: 'CodigoRepetido-Ejercicio'!
