@@ -147,6 +147,16 @@ checkThatFails: closureWithAnError withError: errorName andAssertTheseConditions
 			aCollectionOfConditions do: [:aCondition| self assert: (aCondition value: anError)]. ].
 		! !
 
+!CustomerBookTest methodsFor: 'checkingErrorsAreShownCorrectly' stamp: 'cielo 9/5/2023 23:42:31'!
+whenThisFails: aFailingClosure  withError: aTypeOfError  inThisCustomerBook: aCustomerBook stillHasThisCustomer: aCustomerName andnumberOfCustomers: anumberOfCustomers
+	|checksCustomersInTheBookAreCorrect|
+	checksCustomersInTheBookAreCorrect := OrderedCollection new.
+	checksCustomersInTheBookAreCorrect add: [:anError | aCustomerBook numberOfCustomers = anumberOfCustomers.].
+	checksCustomersInTheBookAreCorrect add: [:anError | (aCustomerBook includesCustomerNamed: aCustomerName) ].
+	
+	self checkThatFails: aFailingClosure  withError: aTypeOfError 
+	andAssertTheseConditions: checksCustomersInTheBookAreCorrect.! !
+
 
 !CustomerBookTest methodsFor: 'checkingTimeExecution' stamp: 'cielo 9/5/2023 23:13:43'!
 executeThis: aClosure wontLastMoreThan: time
@@ -166,16 +176,6 @@ thisCustomerBookhas: customerBook numberOfActiveCustomers: numberOfActiveCustome
 	self assert: numberOfCustomers equals: customerBook numberOfCustomers.
 
 ! !
-
-!CustomerBookTest methodsFor: 'checkingAmountOfCustumers' stamp: 'cielo 9/5/2023 23:42:31'!
-whenThisFails: aFailingClosure  withError: aTypeOfError  inThisCustomerBook: aCustomerBook stillHasThisCustomer: aCustomerName andnumberOfCustomers: anumberOfCustomers
-	|checksCustomersInTheBookAreCorrect|
-	checksCustomersInTheBookAreCorrect := OrderedCollection new.
-	checksCustomersInTheBookAreCorrect add: [:anError | aCustomerBook numberOfCustomers = anumberOfCustomers.].
-	checksCustomersInTheBookAreCorrect add: [:anError | (aCustomerBook includesCustomerNamed: aCustomerName) ].
-	
-	self checkThatFails: aFailingClosure  withError: aTypeOfError 
-	andAssertTheseConditions: checksCustomersInTheBookAreCorrect.! !
 
 
 !classDefinition: #CustomerBook category: 'CodigoRepetido-Ejercicio'!
@@ -211,21 +211,6 @@ addCustomerNamed: aName
 	
 	active add: aName ! !
 
-!CustomerBook methodsFor: 'customer management' stamp: 'NR 4/3/2019 10:14:26'!
-numberOfActiveCustomers
-	
-	^active size! !
-
-!CustomerBook methodsFor: 'customer management' stamp: 'NR 4/3/2019 10:14:26'!
-numberOfCustomers
-	
-	^active size + suspended size! !
-
-!CustomerBook methodsFor: 'customer management' stamp: 'NR 9/19/2018 17:36:09'!
-numberOfSuspendedCustomers
-	
-	^suspended size! !
-
 !CustomerBook methodsFor: 'customer management' stamp: 'cielo 9/5/2023 23:48:50'!
 removeCustomerNamed: aName 
  	self removeIfExists: aName from: active .
@@ -233,16 +218,6 @@ removeCustomerNamed: aName
 
 	^ NotFound signal.
 ! !
-
-!CustomerBook methodsFor: 'customer management' stamp: 'HernanWilkinson 7/6/2011 17:52'!
-signalCustomerAlreadyExists 
-
-	self error: self class customerAlreadyExistsErrorMessage! !
-
-!CustomerBook methodsFor: 'customer management' stamp: 'HernanWilkinson 7/6/2011 17:51'!
-signalCustomerNameCannotBeEmpty 
-
-	self error: self class customerCanNotBeEmptyErrorMessage ! !
 
 !CustomerBook methodsFor: 'customer management' stamp: 'NR 4/3/2019 10:14:26'!
 suspendCustomerNamed: aName 
@@ -266,6 +241,33 @@ removeIfExists: aName from: anOrderCollection
 			] 
 	].
 ! !
+
+
+!CustomerBook methodsFor: 'signals' stamp: 'HernanWilkinson 7/6/2011 17:52'!
+signalCustomerAlreadyExists 
+
+	self error: self class customerAlreadyExistsErrorMessage! !
+
+!CustomerBook methodsFor: 'signals' stamp: 'HernanWilkinson 7/6/2011 17:51'!
+signalCustomerNameCannotBeEmpty 
+
+	self error: self class customerCanNotBeEmptyErrorMessage ! !
+
+
+!CustomerBook methodsFor: 'numbersOf' stamp: 'NR 4/3/2019 10:14:26'!
+numberOfActiveCustomers
+	
+	^active size! !
+
+!CustomerBook methodsFor: 'numbersOf' stamp: 'NR 4/3/2019 10:14:26'!
+numberOfCustomers
+	
+	^active size + suspended size! !
+
+!CustomerBook methodsFor: 'numbersOf' stamp: 'NR 9/19/2018 17:36:09'!
+numberOfSuspendedCustomers
+	
+	^suspended size! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
