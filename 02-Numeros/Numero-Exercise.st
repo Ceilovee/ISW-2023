@@ -375,19 +375,12 @@ Numero subclass: #Entero
 	^anAdder addToEntero: self .
 ! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'cielo 9/11/2023 23:58:48'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'Alex 9/14/2023 15:37:16'!
 - aSubtrahend 
-	
-	"(aSubtrahend isKindOf: self class) ifTrue:[^ self class with: value - aSubtrahend integerValue].
-	^Fraccion with: (self value * aSubtrahend  denominator) -  aSubtrahend  numerator over: aSubtrahend  denominator ."
-	
 	^aSubtrahend  substractToEntero: self .! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'cielo 9/11/2023 20:13:56'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'Alex 9/14/2023 15:37:03'!
 / aDivisor 
-	
-	"( aDivisor isKindOf: self class) ifTrue:[^Fraccion with: self over: aDivisor].
-	^Fraccion with: self value * aDivisor denominator over: aDivisor numerator "
 	
 	^aDivisor divideToEntero: self! !
 
@@ -459,7 +452,7 @@ addToEntero: anEntero
 
 	^self class with: value + anEntero integerValue! !
 
-!Entero methodsFor: 'arithmetic operations to enteros' stamp: 'cielo 9/11/2023 19:39:45'!
+!Entero methodsFor: 'arithmetic operations to enteros' stamp: 'Alex 9/14/2023 15:27:05'!
 divideToEntero: anEnteroNumber
 	^Fraccion with: anEnteroNumber over: self! !
 
@@ -474,19 +467,19 @@ substractToEntero: anEntero
 	^ self class with: anEntero integerValue - value! !
 
 
-!Entero methodsFor: 'arithmetic operations to fraccions' stamp: 'cielo 9/11/2023 21:49:33'!
+!Entero methodsFor: 'arithmetic operations to fraccions' stamp: 'Alex 9/14/2023 15:23:11'!
 addToFraccion: aFraccionNumber
 	
-	^Fraccion with: (aFraccionNumber denominator * self value ) +  aFraccionNumber numerator over: aFraccionNumber denominator! !
+	^aFraccionNumber addToEntero: self.! !
 
 !Entero methodsFor: 'arithmetic operations to fraccions' stamp: 'cielo 9/11/2023 21:52:43'!
 divideToFraccion: aFraccionNumber
 
 	^Fraccion with: aFraccionNumber numerator over: self value * aFraccionNumber denominator ! !
 
-!Entero methodsFor: 'arithmetic operations to fraccions' stamp: 'cielo 9/11/2023 21:50:37'!
+!Entero methodsFor: 'arithmetic operations to fraccions' stamp: 'Alex 9/14/2023 15:29:52'!
 multiplyToFraccion: aFraccion
-	^Fraccion with: (aFraccion numerator * self value) over: aFraccion denominator! !
+	^aFraccion multiplyToEntero: self! !
 
 !Entero methodsFor: 'arithmetic operations to fraccions' stamp: 'cielo 9/12/2023 00:04:11'!
 substractToFraccion: aFraccion 
@@ -721,10 +714,10 @@ printOn: aStream
 addToEntero: anEnteroNumber
 	^self class with: (denominator * anEnteroNumber value ) + numerator over: denominator! !
 
-!Fraccion methodsFor: 'arithmetic operations to enteros' stamp: 'cielo 9/11/2023 20:16:25'!
+!Fraccion methodsFor: 'arithmetic operations to enteros' stamp: 'Alex 9/14/2023 15:23:54'!
 divideToEntero: anEnteroNumber
 
-	^Fraccion with: anEnteroNumber value * denominator over: numerator ! !
+	^self class with: anEnteroNumber value * denominator over: numerator ! !
 
 !Fraccion methodsFor: 'arithmetic operations to enteros' stamp: 'cielo 9/11/2023 21:44:38'!
 multiplyToEntero: anEntero
