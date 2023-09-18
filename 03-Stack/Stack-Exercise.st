@@ -139,22 +139,79 @@ test10CanNotTopWhenThereAreNoObjectsInTheStack
 
 !classDefinition: #SentenceFinderByPrefixTest category: 'Stack-Exercise'!
 TestCase subclass: #SentenceFinderByPrefixTest
-	instanceVariableNames: 'stackVacio'
+	instanceVariableNames: 'stackVacio stackDeOraciones sentenceFinderOraciones sentenceFinderStackVacio'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'cielo 9/16/2023 19:19:38'!
+!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'cielo 9/17/2023 20:06:09'!
 test01ReturnsEmptyWhenStackEmpty
-	|sentenceFinder|
-	sentenceFinder := SentenceFinderByPrefix withStack: stackVacio .
-	self assert: ((sentenceFinder encontrarOracionesConPrefijo: 'hola') isEmpty ).! !
+	self assert: ((sentenceFinderStackVacio encontrarOracionesConPrefijo: 'hola') isEmpty ).! !
+
+!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'cielo 9/17/2023 20:05:44'!
+test02ReturnsEmptyWhenPrefixDoesntMatch
+	self assert: ((sentenceFinderOraciones encontrarOracionesConPrefijo: 'hola') isEmpty ).! !
+
+!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'cielo 9/17/2023 20:12:51'!
+test03ReturnsOneMatchCaseSensitive
+
+	| collectionWithMatch |
+	
+	collectionWithMatch := OrderedCollection new.
+	collectionWithMatch add: 'Winter is here'.
+	
+	self assert: ((sentenceFinderOraciones encontrarOracionesConPrefijo: 'Winter') = collectionWithMatch ).! !
+
+!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'cielo 9/17/2023 20:15:27'!
+test04ReturnsMatchesWithWCaseSensitive
+
+	| collectionWithMatch |
+	
+	collectionWithMatch := OrderedCollection new.
+	collectionWithMatch add: 'winning is everything'.
+	collectionWithMatch add: 'winter is comming'.
+	
+	self assert: ((sentenceFinderOraciones encontrarOracionesConPrefijo: 'w') = collectionWithMatch ).! !
+
+!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'cielo 9/17/2023 21:31:55'!
+test05PrefixCantBeEmpty
+	
+	self
+		should: [ sentenceFinderOraciones encontrarOracionesConPrefijo: '']
+		raise: Error - MessageNotUnderstood 
+		withExceptionDo: [ :anError |
+			self assert: anError messageText = sentenceFinderOraciones elPrefijoNoPuedeSerVacio ]! !
+
+!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'cielo 9/17/2023 22:04:55'!
+test06StackIsStillTheSame
+	| stack |
+	stack := sentenceFinderOraciones stack.
+	sentenceFinderOraciones encontrarOracionesConPrefijo: 'hola'.
+	self assert: sentenceFinderOraciones stack = stack! !
+
+!SentenceFinderByPrefixTest methodsFor: 'test' stamp: 'cielo 9/17/2023 21:33:03'!
+test07PrefixCantHaveBlankSpaces
+	
+	self
+		should: [ sentenceFinderOraciones encontrarOracionesConPrefijo: 'winter is']
+		raise: Error - MessageNotUnderstood 
+		withExceptionDo: [ :anError |
+			self assert: anError messageText = sentenceFinderOraciones elPrefijoNoPuedeContenerEspacioVacio ]! !
 
 
-!SentenceFinderByPrefixTest methodsFor: 'setup' stamp: 'cielo 9/16/2023 19:11:59'!
+!SentenceFinderByPrefixTest methodsFor: 'setup' stamp: 'cielo 9/17/2023 19:59:46'!
 setUp
 
 	stackVacio := OOStack new.
+	
+	stackDeOraciones := OOStack new.
+	stackDeOraciones push: 'winter is comming'.
+	stackDeOraciones push: 'winning is everything'.
+	stackDeOraciones push: 'The winds of Winter'.
+	stackDeOraciones push: 'Winter is here'.
+	
+	sentenceFinderOraciones := SentenceFinderByPrefix withStack: stackDeOraciones .
+	sentenceFinderStackVacio := SentenceFinderByPrefix withStack: stackVacio .
 	
 	! !
 
@@ -316,10 +373,16 @@ Object subclass: #SentenceFinderByPrefix
 initializeWithStack: unStackParaBucarPrefijos
 	stackDeOraciones :=  unStackParaBucarPrefijos! !
 
+!SentenceFinderByPrefix methodsFor: 'initialize' stamp: 'cielo 9/17/2023 22:02:09'!
+stack
+	^stackDeOraciones ! !
 
-!SentenceFinderByPrefix methodsFor: 'find' stamp: 'cielo 9/16/2023 19:17:44'!
+
+!SentenceFinderByPrefix methodsFor: 'find' stamp: 'cielo 9/17/2023 21:28:48'!
 encontrarOracionesConPrefijo: unPrefijo
 	|stackDeAlmacenamientoTemporal prefijosEncontrados|
+	
+	self precondicionesDelPrefijo: unPrefijo.
 	
 	stackDeAlmacenamientoTemporal := OOStack new.
 	prefijosEncontrados := OrderedCollection new.
@@ -333,6 +396,12 @@ encontrarOracionesConPrefijo: unPrefijo
 	self rearmarStackAPartirDe: stackDeAlmacenamientoTemporal.
 	
 	^prefijosEncontrados! !
+
+!SentenceFinderByPrefix methodsFor: 'find' stamp: 'cielo 9/17/2023 22:00:09'!
+precondicionesDelPrefijo: unPrefijo
+
+	unPrefijo isEmpty ifTrue: [^self error: self elPrefijoNoPuedeSerVacio].
+	(unPrefijo includesSubString: ' ') ifTrue: [^self error: self elPrefijoNoPuedeContenerEspacioVacio]! !
 
 
 !SentenceFinderByPrefix methodsFor: 'operacionesSobreString' stamp: 'cielo 9/16/2023 18:40:26'!
@@ -356,6 +425,15 @@ rearmarStackAPartirDe: stackInvertido
 	[
 		stackDeOraciones push: stackInvertido pop.
 	] . ! !
+
+
+!SentenceFinderByPrefix methodsFor: 'mensajesDeError' stamp: 'cielo 9/17/2023 21:28:07'!
+elPrefijoNoPuedeContenerEspacioVacio
+	^'el prefijo no puede contener espacios vacios'! !
+
+!SentenceFinderByPrefix methodsFor: 'mensajesDeError' stamp: 'cielo 9/17/2023 21:27:20'!
+elPrefijoNoPuedeSerVacio
+	^'el prefijo no puede ser vacio'! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
