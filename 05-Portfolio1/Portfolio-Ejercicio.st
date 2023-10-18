@@ -141,7 +141,7 @@ test11cantAddAnAccountToAPortfolioMoreThanOnce
 	
 ! !
 
-!PortfolioTest methodsFor: 'as yet unclassified' stamp: 'cielo 10/12/2023 18:36:07'!
+!PortfolioTest methodsFor: 'as yet unclassified' stamp: 'cielo 10/18/2023 17:58:49'!
 test13canAddAnotherPortfolio
 
 	|portfolio account portfolio2 account2 deposit|
@@ -154,7 +154,7 @@ test13canAddAnotherPortfolio
 	portfolio2 add: account2.
 	deposit := Deposit register: 100 on: account2. 
 	
-	portfolio add: portfolio2 .
+	portfolio addPortfolio: portfolio2 .
 	
 	self assert: portfolio balance equals: 100. 
 	
@@ -372,17 +372,30 @@ for: aValue
 	^ self new initializeFor: aValue ! !
 
 
-!classDefinition: #Portfolio category: 'Portfolio-Ejercicio'!
-Object subclass: #Portfolio
-	instanceVariableNames: 'accounts'
+!classDefinition: #BankAccounts category: 'Portfolio-Ejercicio'!
+Object subclass: #BankAccounts
+	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Portfolio-Ejercicio'!
 
-!Portfolio methodsFor: 'balance' stamp: 'cielo 10/12/2023 07:30:03'!
-balance
+
+!classDefinition: #Portfolio category: 'Portfolio-Ejercicio'!
+BankAccounts subclass: #Portfolio
+	instanceVariableNames: 'accounts portfolios'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Portfolio-Ejercicio'!
 
-	^accounts inject: 0 into: [:balance :account  | balance + account balance ].! !
+!Portfolio methodsFor: 'balance' stamp: 'cielo 10/18/2023 17:56:13'!
+balance
+	|acoountBalance portoliosBalance|
+
+	acoountBalance:= accounts inject: 0 into: [:balance :account  | balance + account balance ].
+	
+	portoliosBalance:= portfolios inject: 0 into: [:balance :porfolio  | balance + porfolio balance ].
+	
+	^acoountBalance + portoliosBalance! !
 
 
 !Portfolio methodsFor: 'addAccounts' stamp: 'cielo 10/12/2023 19:08:29'!
@@ -390,14 +403,20 @@ add: account
 	(accounts includes: account) ifTrue: [^self error: self cantAddAccountAlreadyAdded ].
 	accounts add: account ! !
 
+!Portfolio methodsFor: 'addAccounts' stamp: 'cielo 10/18/2023 18:04:17'!
+addPortfolio: portfolio
+	(portfolios includes: portfolio) ifTrue: [^self error: self cantAddPortfolioWithanAccountAlreadyAdded ].
+	portfolios add: portfolio ! !
 
-!Portfolio methodsFor: 'initialization' stamp: 'cielo 10/12/2023 08:07:55'!
+
+!Portfolio methodsFor: 'initialization' stamp: 'cielo 10/18/2023 17:54:27'!
 initialize
 	
-	accounts := OrderedCollection new.! !
+	accounts := OrderedCollection new.
+	portfolios := OrderedCollection new.! !
 
 
-!Portfolio methodsFor: 'accessing' stamp: 'cielo 10/12/2023 18:04:29'!
+!Portfolio methodsFor: 'accessing' stamp: 'cielo 10/18/2023 17:56:53'!
 transactions
 
 	| allTransactions |
@@ -408,13 +427,19 @@ transactions
 	    allTransactions addAll: account transactions.
 	].
 
+	portfolios do: [ :porfolio |
+	    allTransactions addAll: porfolio transactions.
+	].
+
 	^ allTransactions.! !
 
 
-!Portfolio methodsFor: 'registers' stamp: 'cielo 10/12/2023 18:14:55'!
+!Portfolio methodsFor: 'registers' stamp: 'cielo 10/18/2023 17:58:21'!
 hasRegistered: aTransaction 
 
-	^accounts anySatisfy: [:account | account transactions includes: aTransaction ]! !
+	^(accounts anySatisfy: [:account | account transactions includes: aTransaction ]) or: 
+	  (portfolios anySatisfy: [:porfolio | porfolio transactions includes: aTransaction ])
+	! !
 
 
 !Portfolio methodsFor: 'error handling' stamp: 'cielo 10/12/2023 18:23:40'!
@@ -422,9 +447,14 @@ cantAddAccountAlreadyAdded
 
 	^'cant add account already added'! !
 
+!Portfolio methodsFor: 'error handling' stamp: 'cielo 10/18/2023 18:01:14'!
+cantAddPortfolioWithanAccountAlreadyAdded
+
+	^'cant add portfolio already added'! !
+
 
 !classDefinition: #ReceptiveAccount category: 'Portfolio-Ejercicio'!
-Object subclass: #ReceptiveAccount
+BankAccounts subclass: #ReceptiveAccount
 	instanceVariableNames: 'transactions'
 	classVariableNames: ''
 	poolDictionaries: ''
