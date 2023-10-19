@@ -1,0 +1,1043 @@
+
+
+----SNAPSHOT----(18 October 2023 18:08:44) CuisUniversity-Portfolio1-latest-version.image priorSource: 10387871!
+
+----STARTUP---- (19 October 2023 10:26:59) as C:\Users\alexa\OneDrive\Documents\Universidad\Ingenieria de software I\smalltalk ej portfolio\CuisUniversity-Portfolio1-latest-version.image!
+
+
+----End fileIn of C:\Users\alexa\OneDrive\Documents\Universidad\Ingenieria de software I\smalltalk ej portfolio\Portfolio-Ejercicio.st----!
+!Portfolio methodsFor: 'balance' stamp: 'Alex 10/19/2023 11:17:22' prior: 50332073!
+ balance
+	|acoountBalance portoliosBalance|
+
+	acoountBalance:= accounts inject: 0 into: [:balance :account  | balance + account balance ].
+	
+	portoliosBalance:= portfolios inject: 0 into: [:balance :porfolio  | balance + porfolio balance ].
+	
+	^acoountBalance + portoliosBalance! !
+!Portfolio methodsFor: 'balance' stamp: 'Alex 10/19/2023 11:18:00'!
+accountsBalance
+
+	^ accounts inject: 0 into: [:balance :account  | balance + account balance ]! !
+!Portfolio methodsFor: 'balance' stamp: 'Alex 10/19/2023 11:18:00' prior: 50332187!
+balance
+	|acoountBalance portoliosBalance|
+
+	acoountBalance:= self accountsBalance.
+	
+	portoliosBalance:= portfolios inject: 0 into: [:balance :porfolio  | balance + porfolio balance ].
+	
+	^acoountBalance + portoliosBalance! !
+!Portfolio methodsFor: 'balance' stamp: 'Alex 10/19/2023 11:18:43'!
+portfoliosBalance
+
+	^ portfolios inject: 0 into: [:balance :porfolio  | balance + porfolio balance ]! !
+!Portfolio methodsFor: 'balance' stamp: 'Alex 10/19/2023 11:18:43' prior: 50332205!
+balance
+	|acoountBalance portoliosBalance|
+
+	acoountBalance:= self accountsBalance.
+	
+	portoliosBalance:= self portfoliosBalance.
+	
+	^acoountBalance + portoliosBalance! !
+!Portfolio methodsFor: 'balance' stamp: 'Alex 10/19/2023 11:19:20' prior: 50332221!
+balance
+	^ self accountsBalance + self portfoliosBalance ! !
+!Portfolio methodsFor: 'addAccounts' stamp: 'Alex 10/19/2023 11:21:24' prior: 50332085!
+add: account 
+	((accounts includes: account) or: [portfolios]) ifTrue: [^self error: self cantAddAccountAlreadyAdded ].
+	accounts add: account ! !
+!Portfolio methodsFor: 'addAccounts' stamp: 'Alex 10/19/2023 11:23:12' prior: 50332235!
+add: account 
+	((accounts includes: account)) ifTrue: [^self error: self cantAddAccountAlreadyAdded ].
+	accounts add: account ! !
+!PortfolioTest methodsFor: 'as yet unclassified' stamp: 'Alex 10/19/2023 11:29:24'!
+test15cantAddAnAccountToAPortfolioThatHavePortfoliosWithThatAccount
+
+	|portfolioWithAPortfolio portfolioInPortfolio account|
+	
+	portfolioWithAPortfolio := Portfolio new.
+	portfolioInPortfolio := Portfolio new.
+	
+	account := ReceptiveAccount new.
+	portfolioInPortfolio add: account.
+	
+	portfolioWithAPortfolio addPortfolio: portfolioInPortfolio.
+	
+	self
+		should: [portfolioWithAPortfolio add: account ] 
+		raise: Error 
+		withExceptionDo: [ :anError |
+			self assert: anError messageText = portfolioWithAPortfolio cantAddAccountAlreadyAdded ]
+	
+! !
+!Portfolio class methodsFor: 'no messages' stamp: 'Alex 10/19/2023 11:29:43'!
+cantAddAccountAlreadyAdded
+
+	^'cant add account already added'! !
+!Portfolio class methodsFor: 'error handling' stamp: 'Alex 10/19/2023 11:30:25'!
+cantAddPortfolioWithanAccountAlreadyAdded
+
+	^'cant add portfolio already added'! !
+
+!methodRemoval: Portfolio #cantAddAccountAlreadyAdded stamp: 'Alex 10/19/2023 11:30:40'!
+cantAddAccountAlreadyAdded
+
+	^'cant add account already added'!
+
+!methodRemoval: Portfolio #cantAddPortfolioWithanAccountAlreadyAdded stamp: 'Alex 10/19/2023 11:30:40'!
+cantAddPortfolioWithanAccountAlreadyAdded
+
+	^'cant add portfolio already added'!
+!Portfolio methodsFor: 'addAccounts' stamp: 'Alex 10/19/2023 11:30:51' prior: 50332092!
+addPortfolio: portfolio
+	(portfolios includes: portfolio) ifTrue: [^self error: self class cantAddPortfolioWithanAccountAlreadyAdded ].
+	portfolios add: portfolio ! !
+!Portfolio methodsFor: 'addAccounts' stamp: 'Alex 10/19/2023 11:30:59' prior: 50332243!
+add: account 
+	((accounts includes: account)) ifTrue: [^self error: self class cantAddAccountAlreadyAdded ].
+	accounts add: account ! !
+!PortfolioTest methodsFor: 'as yet unclassified' stamp: 'Alex 10/19/2023 11:31:59' prior: 50331795!
+test11cantAddAnAccountToAPortfolioMoreThanOnce
+
+	|portfolio account|
+	
+	portfolio := Portfolio new.
+	account := ReceptiveAccount new.
+	portfolio add: account.
+	
+	self
+		should: [portfolio add: account ] 
+		raise: Error 
+		withExceptionDo: [ :anError |
+			self assert: anError messageText = Portfolio cantAddAccountAlreadyAdded ]
+	
+! !
+!PortfolioTest methodsFor: 'as yet unclassified' stamp: 'Alex 10/19/2023 11:32:09' prior: 50331827!
+test14cantAddAPortfolioWithRepeatedAccounts
+
+	|portfolio account portfolio2 |
+	
+	portfolio := Portfolio new.
+	portfolio2 := Portfolio new.
+	account := ReceptiveAccount new.
+	portfolio add: account.
+	portfolio2 add: account.
+	
+	self
+		should: [portfolio add: portfolio2 ] 
+		raise: Error 
+		withExceptionDo: [ :anError |
+			self assert: anError messageText = Portfolio cantAddPortfolioWithanAccountAlreadyAdded ]
+	
+	
+! !
+!PortfolioTest methodsFor: 'as yet unclassified' stamp: 'Alex 10/19/2023 11:32:24' prior: 50332250!
+test15cantAddAnAccountToAPortfolioThatHavePortfoliosWithThatAccount
+
+	|portfolioWithAPortfolio portfolioInPortfolio account|
+	
+	portfolioWithAPortfolio := Portfolio new.
+	portfolioInPortfolio := Portfolio new.
+	
+	account := ReceptiveAccount new.
+	portfolioInPortfolio add: account.
+	
+	portfolioWithAPortfolio addPortfolio: portfolioInPortfolio.
+	
+	self
+		should: [portfolioWithAPortfolio add: account ] 
+		raise: Error 
+		withExceptionDo: [ :anError |
+			self assert: anError messageText = Portfolio cantAddAccountAlreadyAdded ]
+	
+! !
+
+!testRun: #PortfolioTest #test01emptyPortfolioHas0Balance stamp: 'Alex 10/19/2023 11:32:53'!
+PASSED!
+
+!testRun: #PortfolioTest #test02addOneAccountToPortfolioAndBalanceOfPortfolioIsThatAccountBalance stamp: 'Alex 10/19/2023 11:32:53'!
+PASSED!
+
+!testRun: #PortfolioTest #test04addMoraThanOneAccountReturnsTheBalanceOfAllAccounts stamp: 'Alex 10/19/2023 11:32:53'!
+PASSED!
+
+!testRun: #PortfolioTest #test06noTransactionIfAccountsDoestHaveTransactions stamp: 'Alex 10/19/2023 11:32:53'!
+PASSED!
+
+!testRun: #PortfolioTest #test07oneAccountAddedToPortfolioAllItsTransactionsAreInPortfolio stamp: 'Alex 10/19/2023 11:32:53'!
+PASSED!
+
+!testRun: #PortfolioTest #test08portfolioHasAllTransactionsFromAccountsAdded stamp: 'Alex 10/19/2023 11:32:53'!
+PASSED!
+
+!testRun: #PortfolioTest #test09PortfolioDoesntHaveTransactionRegistered stamp: 'Alex 10/19/2023 11:32:53'!
+PASSED!
+
+!testRun: #PortfolioTest #test10PortfolioHasTransactionRegistered stamp: 'Alex 10/19/2023 11:32:53'!
+PASSED!
+
+!testRun: #PortfolioTest #test11cantAddAnAccountToAPortfolioMoreThanOnce stamp: 'Alex 10/19/2023 11:32:53'!
+PASSED!
+
+!testRun: #PortfolioTest #test13canAddAnotherPortfolio stamp: 'Alex 10/19/2023 11:32:53'!
+PASSED!
+
+!testRun: #PortfolioTest #test14cantAddAPortfolioWithRepeatedAccounts stamp: 'Alex 10/19/2023 11:32:53'!
+FAILURE!
+
+!testRun: #PortfolioTest #test15cantAddAnAccountToAPortfolioThatHavePortfoliosWithThatAccount stamp: 'Alex 10/19/2023 11:32:53'!
+FAILURE!
+
+!testRun: #PortfolioTest #test14cantAddAPortfolioWithRepeatedAccounts stamp: 'Alex 10/19/2023 11:33:40'!
+FAILURE!
+
+!testRun: #PortfolioTest #test14cantAddAPortfolioWithRepeatedAccounts stamp: 'Alex 10/19/2023 11:33:40'!
+FAILURE!
+
+!testRun: #PortfolioTest #test14cantAddAPortfolioWithRepeatedAccounts stamp: 'Alex 10/19/2023 11:34:08'!
+FAILURE!
+!Portfolio methodsFor: 'addAccounts' stamp: 'Alex 10/19/2023 11:36:19' prior: 50332292!
+addPortfolio: portfolio
+	(portfolio hasAccountsInPortfolio: self) ifTrue: [^self error: self class cantAddPortfolioWithanAccountAlreadyAdded ].
+	portfolios add: portfolio ! !
+!Portfolio methodsFor: 'addAccounts' stamp: 'Alex 10/19/2023 11:36:31' prior: 50332417!
+addPortfolio: portfolio
+	(portfolio hasAccountsInPortfolio: self) ifTrue: 
+	[^self error: self class cantAddPortfolioWithanAccountAlreadyAdded ].
+	portfolios add: portfolio ! !
+!Portfolio methodsFor: 'nil' stamp: 'Alex 10/19/2023 11:44:22'!
+hasAnyAccountInPortfolio: aPortfolio
+
+	accounts inject: false into: [:accountInPortfolio :account | accountInPortfolio or: [aPortfolio hasAccount: account]]! !
+!Portfolio methodsFor: 'addAccounts' stamp: 'Alex 10/19/2023 11:45:21' prior: 50332426!
+addPortfolio: portfolio
+	(portfolio hasAnyAccountInPortfolio: self) ifTrue: 
+	[^self error: self class cantAddPortfolioWithanAccountAlreadyAdded ].
+	portfolios add: portfolio ! !
+!Portfolio methodsFor: 'as yet unclassified' stamp: 'Alex 10/19/2023 11:48:55'!
+hasAccount: anAccount
+	^accounts includes: anAccount.! !
+
+!testRun: #PortfolioTest #test01emptyPortfolioHas0Balance stamp: 'Alex 10/19/2023 11:49:06'!
+PASSED!
+
+!testRun: #PortfolioTest #test02addOneAccountToPortfolioAndBalanceOfPortfolioIsThatAccountBalance stamp: 'Alex 10/19/2023 11:49:06'!
+PASSED!
+
+!testRun: #PortfolioTest #test04addMoraThanOneAccountReturnsTheBalanceOfAllAccounts stamp: 'Alex 10/19/2023 11:49:06'!
+PASSED!
+
+!testRun: #PortfolioTest #test06noTransactionIfAccountsDoestHaveTransactions stamp: 'Alex 10/19/2023 11:49:06'!
+PASSED!
+
+!testRun: #PortfolioTest #test07oneAccountAddedToPortfolioAllItsTransactionsAreInPortfolio stamp: 'Alex 10/19/2023 11:49:06'!
+PASSED!
+
+!testRun: #PortfolioTest #test08portfolioHasAllTransactionsFromAccountsAdded stamp: 'Alex 10/19/2023 11:49:06'!
+PASSED!
+
+!testRun: #PortfolioTest #test09PortfolioDoesntHaveTransactionRegistered stamp: 'Alex 10/19/2023 11:49:06'!
+PASSED!
+
+!testRun: #PortfolioTest #test10PortfolioHasTransactionRegistered stamp: 'Alex 10/19/2023 11:49:06'!
+PASSED!
+
+!testRun: #PortfolioTest #test11cantAddAnAccountToAPortfolioMoreThanOnce stamp: 'Alex 10/19/2023 11:49:06'!
+PASSED!
+
+!testRun: #PortfolioTest #test13canAddAnotherPortfolio stamp: 'Alex 10/19/2023 11:49:06'!
+ERROR!
+
+!testRun: #PortfolioTest #test14cantAddAPortfolioWithRepeatedAccounts stamp: 'Alex 10/19/2023 11:49:06'!
+FAILURE!
+
+!testRun: #PortfolioTest #test15cantAddAnAccountToAPortfolioThatHavePortfoliosWithThatAccount stamp: 'Alex 10/19/2023 11:49:06'!
+ERROR!
+
+!testRun: #PortfolioTest #test13canAddAnotherPortfolio stamp: 'Alex 10/19/2023 11:49:16'!
+ERROR!
+
+!testRun: #PortfolioTest #test13canAddAnotherPortfolio stamp: 'Alex 10/19/2023 11:49:47'!
+ERROR!
+!Portfolio methodsFor: 'as yet unclassified' stamp: 'Alex 10/19/2023 11:54:04' prior: 50332434!
+hasAnyAccountInPortfolio: aPortfolio
+	|accountInPortfolio|
+	accountInPortfolio := false.
+	accounts do: [ :account | accountInPortfolio or: [aPortfolio hasAccount: account]]! !
+
+!testRun: #PortfolioTest #test01emptyPortfolioHas0Balance stamp: 'Alex 10/19/2023 11:54:17'!
+PASSED!
+
+!testRun: #PortfolioTest #test02addOneAccountToPortfolioAndBalanceOfPortfolioIsThatAccountBalance stamp: 'Alex 10/19/2023 11:54:17'!
+PASSED!
+
+!testRun: #PortfolioTest #test04addMoraThanOneAccountReturnsTheBalanceOfAllAccounts stamp: 'Alex 10/19/2023 11:54:17'!
+PASSED!
+
+!testRun: #PortfolioTest #test06noTransactionIfAccountsDoestHaveTransactions stamp: 'Alex 10/19/2023 11:54:17'!
+PASSED!
+
+!testRun: #PortfolioTest #test07oneAccountAddedToPortfolioAllItsTransactionsAreInPortfolio stamp: 'Alex 10/19/2023 11:54:17'!
+PASSED!
+
+!testRun: #PortfolioTest #test08portfolioHasAllTransactionsFromAccountsAdded stamp: 'Alex 10/19/2023 11:54:18'!
+PASSED!
+
+!testRun: #PortfolioTest #test09PortfolioDoesntHaveTransactionRegistered stamp: 'Alex 10/19/2023 11:54:18'!
+PASSED!
+
+!testRun: #PortfolioTest #test10PortfolioHasTransactionRegistered stamp: 'Alex 10/19/2023 11:54:18'!
+PASSED!
+
+!testRun: #PortfolioTest #test11cantAddAnAccountToAPortfolioMoreThanOnce stamp: 'Alex 10/19/2023 11:54:18'!
+PASSED!
+
+!testRun: #PortfolioTest #test13canAddAnotherPortfolio stamp: 'Alex 10/19/2023 11:54:18'!
+ERROR!
+
+!testRun: #PortfolioTest #test14cantAddAPortfolioWithRepeatedAccounts stamp: 'Alex 10/19/2023 11:54:18'!
+FAILURE!
+
+!testRun: #PortfolioTest #test15cantAddAnAccountToAPortfolioThatHavePortfoliosWithThatAccount stamp: 'Alex 10/19/2023 11:54:18'!
+ERROR!
+
+!testRun: #PortfolioTest #test13canAddAnotherPortfolio stamp: 'Alex 10/19/2023 11:54:21'!
+ERROR!
+!Portfolio methodsFor: 'as yet unclassified' stamp: 'Alex 10/19/2023 11:56:59' prior: 50332507!
+hasAnyAccountInPortfolio: aPortfolio
+
+	^accounts inject: false into: [:accountInPortfolio :account| accountInPortfolio or: [aPortfolio hasAccount: account]]! !
+!Portfolio methodsFor: 'as yet unclassified' stamp: 'Alex 10/19/2023 11:57:12' prior: 50332564!
+hasAnyAccountInPortfolio: aPortfolio
+
+	^accounts inject: false into: [:accountInPortfolio :account|accountInPortfolio or: [aPortfolio hasAccount: account]]! !
+
+!testRun: #PortfolioTest #test01emptyPortfolioHas0Balance stamp: 'Alex 10/19/2023 11:57:18'!
+PASSED!
+
+!testRun: #PortfolioTest #test02addOneAccountToPortfolioAndBalanceOfPortfolioIsThatAccountBalance stamp: 'Alex 10/19/2023 11:57:18'!
+PASSED!
+
+!testRun: #PortfolioTest #test04addMoraThanOneAccountReturnsTheBalanceOfAllAccounts stamp: 'Alex 10/19/2023 11:57:18'!
+PASSED!
+
+!testRun: #PortfolioTest #test06noTransactionIfAccountsDoestHaveTransactions stamp: 'Alex 10/19/2023 11:57:18'!
+PASSED!
+
+!testRun: #PortfolioTest #test07oneAccountAddedToPortfolioAllItsTransactionsAreInPortfolio stamp: 'Alex 10/19/2023 11:57:18'!
+PASSED!
+
+!testRun: #PortfolioTest #test08portfolioHasAllTransactionsFromAccountsAdded stamp: 'Alex 10/19/2023 11:57:18'!
+PASSED!
+
+!testRun: #PortfolioTest #test09PortfolioDoesntHaveTransactionRegistered stamp: 'Alex 10/19/2023 11:57:18'!
+PASSED!
+
+!testRun: #PortfolioTest #test10PortfolioHasTransactionRegistered stamp: 'Alex 10/19/2023 11:57:18'!
+PASSED!
+
+!testRun: #PortfolioTest #test11cantAddAnAccountToAPortfolioMoreThanOnce stamp: 'Alex 10/19/2023 11:57:18'!
+PASSED!
+
+!testRun: #PortfolioTest #test13canAddAnotherPortfolio stamp: 'Alex 10/19/2023 11:57:18'!
+PASSED!
+
+!testRun: #PortfolioTest #test14cantAddAPortfolioWithRepeatedAccounts stamp: 'Alex 10/19/2023 11:57:18'!
+FAILURE!
+
+!testRun: #PortfolioTest #test15cantAddAnAccountToAPortfolioThatHavePortfoliosWithThatAccount stamp: 'Alex 10/19/2023 11:57:18'!
+FAILURE!
+
+!testRun: #PortfolioTest #test14cantAddAPortfolioWithRepeatedAccounts stamp: 'Alex 10/19/2023 11:57:24'!
+FAILURE!
+!Portfolio methodsFor: 'addAccounts' stamp: 'Alex 10/19/2023 11:58:52' prior: 50332301!
+add: account 
+	(self hasAccount: account) ifTrue: [^self error: self class cantAddAccountAlreadyAdded ].
+	accounts add: account ! !
+!Portfolio methodsFor: 'as yet unclassified' stamp: 'Alex 10/19/2023 12:02:43' prior: 50332451!
+hasAccount: anAccount
+	^(accounts includes: anAccount) or: 
+	[portfolios inject: false into: [:portfolioHasAccount :portfolio| 
+							portfolioHasAccount or: [portfolio hasAccount: anAccount]]]! !
+
+!testRun: #PortfolioTest #test01emptyPortfolioHas0Balance stamp: 'Alex 10/19/2023 12:02:55'!
+PASSED!
+
+!testRun: #PortfolioTest #test02addOneAccountToPortfolioAndBalanceOfPortfolioIsThatAccountBalance stamp: 'Alex 10/19/2023 12:02:55'!
+PASSED!
+
+!testRun: #PortfolioTest #test04addMoraThanOneAccountReturnsTheBalanceOfAllAccounts stamp: 'Alex 10/19/2023 12:02:55'!
+PASSED!
+
+!testRun: #PortfolioTest #test06noTransactionIfAccountsDoestHaveTransactions stamp: 'Alex 10/19/2023 12:02:55'!
+PASSED!
+
+!testRun: #PortfolioTest #test07oneAccountAddedToPortfolioAllItsTransactionsAreInPortfolio stamp: 'Alex 10/19/2023 12:02:55'!
+PASSED!
+
+!testRun: #PortfolioTest #test08portfolioHasAllTransactionsFromAccountsAdded stamp: 'Alex 10/19/2023 12:02:55'!
+PASSED!
+
+!testRun: #PortfolioTest #test09PortfolioDoesntHaveTransactionRegistered stamp: 'Alex 10/19/2023 12:02:55'!
+PASSED!
+
+!testRun: #PortfolioTest #test10PortfolioHasTransactionRegistered stamp: 'Alex 10/19/2023 12:02:55'!
+PASSED!
+
+!testRun: #PortfolioTest #test11cantAddAnAccountToAPortfolioMoreThanOnce stamp: 'Alex 10/19/2023 12:02:55'!
+PASSED!
+
+!testRun: #PortfolioTest #test13canAddAnotherPortfolio stamp: 'Alex 10/19/2023 12:02:55'!
+PASSED!
+
+!testRun: #PortfolioTest #test14cantAddAPortfolioWithRepeatedAccounts stamp: 'Alex 10/19/2023 12:02:55'!
+FAILURE!
+
+!testRun: #PortfolioTest #test15cantAddAnAccountToAPortfolioThatHavePortfoliosWithThatAccount stamp: 'Alex 10/19/2023 12:02:55'!
+PASSED!
+
+!testRun: #PortfolioTest #test14cantAddAPortfolioWithRepeatedAccounts stamp: 'Alex 10/19/2023 12:02:55'!
+FAILURE!
+
+!testRun: #PortfolioTest #test01emptyPortfolioHas0Balance stamp: 'Alex 10/19/2023 12:05:35'!
+PASSED!
+
+!testRun: #PortfolioTest #test02addOneAccountToPortfolioAndBalanceOfPortfolioIsThatAccountBalance stamp: 'Alex 10/19/2023 12:05:35'!
+PASSED!
+
+!testRun: #PortfolioTest #test04addMoraThanOneAccountReturnsTheBalanceOfAllAccounts stamp: 'Alex 10/19/2023 12:05:35'!
+PASSED!
+
+!testRun: #PortfolioTest #test06noTransactionIfAccountsDoestHaveTransactions stamp: 'Alex 10/19/2023 12:05:35'!
+PASSED!
+
+!testRun: #PortfolioTest #test07oneAccountAddedToPortfolioAllItsTransactionsAreInPortfolio stamp: 'Alex 10/19/2023 12:05:35'!
+PASSED!
+
+!testRun: #PortfolioTest #test08portfolioHasAllTransactionsFromAccountsAdded stamp: 'Alex 10/19/2023 12:05:35'!
+PASSED!
+
+!testRun: #PortfolioTest #test09PortfolioDoesntHaveTransactionRegistered stamp: 'Alex 10/19/2023 12:05:35'!
+PASSED!
+
+!testRun: #PortfolioTest #test10PortfolioHasTransactionRegistered stamp: 'Alex 10/19/2023 12:05:35'!
+PASSED!
+
+!testRun: #PortfolioTest #test11cantAddAnAccountToAPortfolioMoreThanOnce stamp: 'Alex 10/19/2023 12:05:35'!
+PASSED!
+
+!testRun: #PortfolioTest #test13canAddAnotherPortfolio stamp: 'Alex 10/19/2023 12:05:35'!
+PASSED!
+
+!testRun: #PortfolioTest #test14cantAddAPortfolioWithRepeatedAccounts stamp: 'Alex 10/19/2023 12:05:35'!
+FAILURE!
+
+!testRun: #PortfolioTest #test15cantAddAnAccountToAPortfolioThatHavePortfoliosWithThatAccount stamp: 'Alex 10/19/2023 12:05:35'!
+PASSED!
+
+!testRun: #PortfolioTest #test14cantAddAPortfolioWithRepeatedAccounts stamp: 'Alex 10/19/2023 12:05:35'!
+FAILURE!
+
+!testRun: #PortfolioTest #test14cantAddAPortfolioWithRepeatedAccounts stamp: 'Alex 10/19/2023 12:07:30'!
+FAILURE!
+
+!testRun: #PortfolioTest #test14cantAddAPortfolioWithRepeatedAccounts stamp: 'Alex 10/19/2023 12:08:56'!
+PASSED!
+
+portfolio := Portfolio new.
+	portfolio2 := Portfolio new.
+	account := ReceptiveAccount new.
+	portfolio add: account.
+	portfolio2 add: account.!
+
+portfolio add: portfolio2 !
+
+portfolio add: portfolio2 !
+!Portfolio class methodsFor: 'error handling' stamp: 'Alex 10/19/2023 12:10:36'!
+cantAddPortfolioWithAnAccountAlreadyAdded
+
+	^'cant add portfolio already added'! !
+!PortfolioTest methodsFor: 'tests' stamp: 'Alex 10/19/2023 12:10:49' prior: 50332324!
+test14cantAddAPortfolioWithRepeatedAccounts
+
+	|portfolio account portfolio2 |
+	
+	portfolio := Portfolio new.
+	portfolio2 := Portfolio new.
+	account := ReceptiveAccount new.
+	portfolio add: account.
+	portfolio2 add: account.
+	
+	self
+		should: [portfolio add: portfolio2 ] 
+		raise: Error 
+		withExceptionDo: [ :anError |
+			self assert: anError messageText = Portfolio cantAddPortfolioWithAnAccountAlreadyAdded ]
+	
+	
+! !
+!Portfolio methodsFor: 'add' stamp: 'Alex 10/19/2023 12:12:38'!
+addAccount: account 
+	(self hasAccount: account) ifTrue: [^self error: self class cantAddAccountAlreadyAdded ].
+	accounts add: account ! !
+!Portfolio methodsFor: 'add' stamp: 'Alex 10/19/2023 12:13:41' prior: 50332629!
+add: bankAccount 
+	bankAccount addToPortfolio: self	! !
+!Portfolio methodsFor: 'as yet unclassified' stamp: 'Alex 10/19/2023 12:14:51'!
+addToPortfolio: aPortfolio
+	aPortfolio addPortfolio: self! !
+!ReceptiveAccount methodsFor: 'nil' stamp: 'Alex 10/19/2023 12:15:26'!
+addToPortfolio: aPortfolio
+	aPortfolio addAccount: self! !
+
+!testRun: #PortfolioTest #test01emptyPortfolioHas0Balance stamp: 'Alex 10/19/2023 12:15:35'!
+PASSED!
+
+!testRun: #PortfolioTest #test02addOneAccountToPortfolioAndBalanceOfPortfolioIsThatAccountBalance stamp: 'Alex 10/19/2023 12:15:35'!
+PASSED!
+
+!testRun: #PortfolioTest #test04addMoraThanOneAccountReturnsTheBalanceOfAllAccounts stamp: 'Alex 10/19/2023 12:15:35'!
+PASSED!
+
+!testRun: #PortfolioTest #test06noTransactionIfAccountsDoestHaveTransactions stamp: 'Alex 10/19/2023 12:15:35'!
+PASSED!
+
+!testRun: #PortfolioTest #test07oneAccountAddedToPortfolioAllItsTransactionsAreInPortfolio stamp: 'Alex 10/19/2023 12:15:35'!
+PASSED!
+
+!testRun: #PortfolioTest #test08portfolioHasAllTransactionsFromAccountsAdded stamp: 'Alex 10/19/2023 12:15:35'!
+PASSED!
+
+!testRun: #PortfolioTest #test09PortfolioDoesntHaveTransactionRegistered stamp: 'Alex 10/19/2023 12:15:35'!
+PASSED!
+
+!testRun: #PortfolioTest #test10PortfolioHasTransactionRegistered stamp: 'Alex 10/19/2023 12:15:35'!
+PASSED!
+
+!testRun: #PortfolioTest #test11cantAddAnAccountToAPortfolioMoreThanOnce stamp: 'Alex 10/19/2023 12:15:35'!
+PASSED!
+
+!testRun: #PortfolioTest #test13canAddAnotherPortfolio stamp: 'Alex 10/19/2023 12:15:35'!
+PASSED!
+
+!testRun: #PortfolioTest #test14cantAddAPortfolioWithRepeatedAccounts stamp: 'Alex 10/19/2023 12:15:35'!
+PASSED!
+
+!testRun: #PortfolioTest #test15cantAddAnAccountToAPortfolioThatHavePortfoliosWithThatAccount stamp: 'Alex 10/19/2023 12:15:35'!
+PASSED!
+!BankAccounts methodsFor: 'no messages' stamp: 'Alex 10/19/2023 13:29:35'!
+balance
+	^self subclassResponsibility ! !
+!BankAccounts methodsFor: 'nil' stamp: 'Alex 10/19/2023 13:31:11'!
+transactions
+	^self subclassResponsibility ! !
+!BankAccounts methodsFor: 'nil' stamp: 'Alex 10/19/2023 13:33:52'!
+hasRegistered: aTransaction
+	^self subclassResponsibility ! !
+!Portfolio methodsFor: 'accounts checks' stamp: 'Alex 10/19/2023 13:38:01'!
+hasAPortfolioThatContainsTheAccount: anAccount
+
+	^ portfolios inject: false into: [:portfolioHasAccount :portfolio| 
+							portfolioHasAccount or: [portfolio hasAccount: anAccount]]! !
+!Portfolio methodsFor: 'accounts checks' stamp: 'Alex 10/19/2023 13:38:01' prior: 50332637!
+hasAccount: anAccount
+	^(accounts includes: anAccount) or: 
+	[self hasAPortfolioThatContainsTheAccount: anAccount]! !
+!Portfolio methodsFor: 'accounts checks' stamp: 'Alex 10/19/2023 13:38:07' prior: 50332868!
+hasAccount: anAccount
+	^(accounts includes: anAccount) or: [self hasAPortfolioThatContainsTheAccount: anAccount]! !
+!Portfolio methodsFor: 'accounts checks' stamp: 'Alex 10/19/2023 13:38:23' prior: 50332859!
+hasAPortfolioThatContainsTheAccount: anAccount
+
+	^portfolios inject: false into: [:portfolioHasAccount :portfolio| 
+							portfolioHasAccount or: [portfolio hasAccount: anAccount]]! !
+!PortfolioTest methodsFor: 'tests' stamp: 'Alex 10/19/2023 13:41:37' prior: 50331810!
+test13canAddAnotherPortfolio
+
+	|portfolio account portfolio2 account2 deposit|
+	
+	portfolio := Portfolio new.
+	portfolio2 := Portfolio new.
+	account := ReceptiveAccount new.
+	account2 := ReceptiveAccount new.
+	portfolio add: account.
+	portfolio2 add: account2.
+	deposit := Deposit register: 100 on: account2. 
+	
+	portfolio add: portfolio2 .
+	
+	self assert: portfolio balance equals: 100. 
+	
+	
+! !
+!PortfolioTest methodsFor: 'tests' stamp: 'Alex 10/19/2023 13:42:32' prior: 50332341!
+test15cantAddAnAccountToAPortfolioThatHavePortfoliosWithThatAccount
+
+	|portfolioWithAPortfolio portfolioInPortfolio account|
+	
+	portfolioWithAPortfolio := Portfolio new.
+	portfolioInPortfolio := Portfolio new.
+	
+	account := ReceptiveAccount new.
+	portfolioInPortfolio add: account.
+	
+	portfolioWithAPortfolio add: portfolioInPortfolio.
+	
+	self
+		should: [portfolioWithAPortfolio add: account ] 
+		raise: Error 
+		withExceptionDo: [ :anError |
+			self assert: anError messageText = Portfolio cantAddAccountAlreadyAdded ]
+	
+! !
+
+!testRun: #PortfolioTest #test01emptyPortfolioHas0Balance stamp: 'Alex 10/19/2023 13:42:37'!
+PASSED!
+
+!testRun: #PortfolioTest #test02addOneAccountToPortfolioAndBalanceOfPortfolioIsThatAccountBalance stamp: 'Alex 10/19/2023 13:42:37'!
+PASSED!
+
+!testRun: #PortfolioTest #test04addMoraThanOneAccountReturnsTheBalanceOfAllAccounts stamp: 'Alex 10/19/2023 13:42:37'!
+PASSED!
+
+!testRun: #PortfolioTest #test06noTransactionIfAccountsDoestHaveTransactions stamp: 'Alex 10/19/2023 13:42:37'!
+PASSED!
+
+!testRun: #PortfolioTest #test07oneAccountAddedToPortfolioAllItsTransactionsAreInPortfolio stamp: 'Alex 10/19/2023 13:42:37'!
+PASSED!
+
+!testRun: #PortfolioTest #test08portfolioHasAllTransactionsFromAccountsAdded stamp: 'Alex 10/19/2023 13:42:37'!
+PASSED!
+
+!testRun: #PortfolioTest #test09PortfolioDoesntHaveTransactionRegistered stamp: 'Alex 10/19/2023 13:42:37'!
+PASSED!
+
+!testRun: #PortfolioTest #test10PortfolioHasTransactionRegistered stamp: 'Alex 10/19/2023 13:42:38'!
+PASSED!
+
+!testRun: #PortfolioTest #test11cantAddAnAccountToAPortfolioMoreThanOnce stamp: 'Alex 10/19/2023 13:42:38'!
+PASSED!
+
+!testRun: #PortfolioTest #test13canAddAnotherPortfolio stamp: 'Alex 10/19/2023 13:42:38'!
+PASSED!
+
+!testRun: #PortfolioTest #test14cantAddAPortfolioWithRepeatedAccounts stamp: 'Alex 10/19/2023 13:42:38'!
+PASSED!
+
+!testRun: #PortfolioTest #test15cantAddAnAccountToAPortfolioThatHavePortfoliosWithThatAccount stamp: 'Alex 10/19/2023 13:42:38'!
+PASSED!
+!Portfolio methodsFor: 'transactions' stamp: 'Alex 10/19/2023 14:11:47' prior: 50332107 overrides: 50332850!
+transactions
+	| allTransactions |
+	allTransactions := OrderedCollection new.
+	
+	self addAccountsTransactionsTo: allTransactions.
+	
+	self addPortfolioTransactionsTo: allTransactions.
+	accounts do: [ :account |
+	    allTransactions addAll: account transactions.
+	].
+	portfolios do: [ :porfolio |
+	    allTransactions addAll: porfolio transactions.
+	].
+
+	^ allTransactions.! !
+!Portfolio methodsFor: 'transactions' stamp: 'Alex 10/19/2023 14:16:08'!
+addAccountsTransactionsTo: aTransactionsCollection
+	accounts inject: aTransactionsCollection into: 
+			[:transactionsCollection :account | transactionsCollection addAll: account transactions]! !
+!Portfolio methodsFor: 'transactions' stamp: 'Alex 10/19/2023 14:16:46' prior: 50332988!
+addAccountsTransactionsTo: aTransactionsCollection
+	^accounts inject: aTransactionsCollection into: 
+			[:transactionsCollection :account | transactionsCollection addAll: account transactions]! !
+!Portfolio methodsFor: 'transactions' stamp: 'Alex 10/19/2023 14:17:10' prior: 50332973 overrides: 50332850!
+transactions
+	| allTransactions |
+	allTransactions := OrderedCollection new.
+	
+	self addAccountsTransactionsTo: allTransactions.
+	
+	self addPortfolioTransactionsTo: allTransactions.
+	portfolios do: [ :porfolio |
+	    allTransactions addAll: porfolio transactions.
+	].
+
+	^ allTransactions.! !
+!Portfolio methodsFor: 'transactions' stamp: 'Alex 10/19/2023 14:17:24' prior: 50333007 overrides: 50332850!
+transactions
+	| allTransactions |
+	allTransactions := OrderedCollection new.
+	
+	self addAccountsTransactionsTo: allTransactions.
+	
+	"self addPortfolioTransactionsTo: allTransactions."
+	portfolios do: [ :porfolio |
+	    allTransactions addAll: porfolio transactions.
+	].
+
+	^ allTransactions.! !
+
+!testRun: #PortfolioTest #test01emptyPortfolioHas0Balance stamp: 'Alex 10/19/2023 14:17:29'!
+PASSED!
+
+!testRun: #PortfolioTest #test02addOneAccountToPortfolioAndBalanceOfPortfolioIsThatAccountBalance stamp: 'Alex 10/19/2023 14:17:29'!
+PASSED!
+
+!testRun: #PortfolioTest #test04addMoraThanOneAccountReturnsTheBalanceOfAllAccounts stamp: 'Alex 10/19/2023 14:17:29'!
+PASSED!
+
+!testRun: #PortfolioTest #test06noTransactionIfAccountsDoestHaveTransactions stamp: 'Alex 10/19/2023 14:17:29'!
+PASSED!
+
+!testRun: #PortfolioTest #test07oneAccountAddedToPortfolioAllItsTransactionsAreInPortfolio stamp: 'Alex 10/19/2023 14:17:29'!
+PASSED!
+
+!testRun: #PortfolioTest #test08portfolioHasAllTransactionsFromAccountsAdded stamp: 'Alex 10/19/2023 14:17:29'!
+FAILURE!
+
+!testRun: #PortfolioTest #test09PortfolioDoesntHaveTransactionRegistered stamp: 'Alex 10/19/2023 14:17:29'!
+PASSED!
+
+!testRun: #PortfolioTest #test10PortfolioHasTransactionRegistered stamp: 'Alex 10/19/2023 14:17:29'!
+PASSED!
+
+!testRun: #PortfolioTest #test11cantAddAnAccountToAPortfolioMoreThanOnce stamp: 'Alex 10/19/2023 14:17:29'!
+PASSED!
+
+!testRun: #PortfolioTest #test13canAddAnotherPortfolio stamp: 'Alex 10/19/2023 14:17:29'!
+PASSED!
+
+!testRun: #PortfolioTest #test14cantAddAPortfolioWithRepeatedAccounts stamp: 'Alex 10/19/2023 14:17:29'!
+PASSED!
+
+!testRun: #PortfolioTest #test15cantAddAnAccountToAPortfolioThatHavePortfoliosWithThatAccount stamp: 'Alex 10/19/2023 14:17:29'!
+PASSED!
+
+!testRun: #PortfolioTest #test08portfolioHasAllTransactionsFromAccountsAdded stamp: 'Alex 10/19/2023 14:17:29'!
+FAILURE!
+!Portfolio methodsFor: 'transactions' stamp: 'Alex 10/19/2023 14:20:52' prior: 50332997!
+addAccountsTransactionsTo: aTransactionsCollection
+	accounts inject: aTransactionsCollection into: 
+			[:transactionsCollection :account | transactionsCollection addAll: account transactions]! !
+
+!testRun: #PortfolioTest #test01emptyPortfolioHas0Balance stamp: 'Alex 10/19/2023 14:20:59'!
+PASSED!
+
+!testRun: #PortfolioTest #test02addOneAccountToPortfolioAndBalanceOfPortfolioIsThatAccountBalance stamp: 'Alex 10/19/2023 14:20:59'!
+PASSED!
+
+!testRun: #PortfolioTest #test04addMoraThanOneAccountReturnsTheBalanceOfAllAccounts stamp: 'Alex 10/19/2023 14:20:59'!
+PASSED!
+
+!testRun: #PortfolioTest #test06noTransactionIfAccountsDoestHaveTransactions stamp: 'Alex 10/19/2023 14:20:59'!
+PASSED!
+
+!testRun: #PortfolioTest #test07oneAccountAddedToPortfolioAllItsTransactionsAreInPortfolio stamp: 'Alex 10/19/2023 14:20:59'!
+PASSED!
+
+!testRun: #PortfolioTest #test08portfolioHasAllTransactionsFromAccountsAdded stamp: 'Alex 10/19/2023 14:20:59'!
+FAILURE!
+
+!testRun: #PortfolioTest #test09PortfolioDoesntHaveTransactionRegistered stamp: 'Alex 10/19/2023 14:20:59'!
+PASSED!
+
+!testRun: #PortfolioTest #test10PortfolioHasTransactionRegistered stamp: 'Alex 10/19/2023 14:20:59'!
+PASSED!
+
+!testRun: #PortfolioTest #test11cantAddAnAccountToAPortfolioMoreThanOnce stamp: 'Alex 10/19/2023 14:20:59'!
+PASSED!
+
+!testRun: #PortfolioTest #test13canAddAnotherPortfolio stamp: 'Alex 10/19/2023 14:20:59'!
+PASSED!
+
+!testRun: #PortfolioTest #test14cantAddAPortfolioWithRepeatedAccounts stamp: 'Alex 10/19/2023 14:20:59'!
+PASSED!
+
+!testRun: #PortfolioTest #test15cantAddAnAccountToAPortfolioThatHavePortfoliosWithThatAccount stamp: 'Alex 10/19/2023 14:20:59'!
+PASSED!
+
+!testRun: #PortfolioTest #test08portfolioHasAllTransactionsFromAccountsAdded stamp: 'Alex 10/19/2023 14:20:59'!
+FAILURE!
+!Portfolio methodsFor: 'transactions' stamp: 'Alex 10/19/2023 14:25:02' prior: 50333082!
+addAccountsTransactionsTo: aTransactionsCollection
+	^accounts inject: aTransactionsCollection into: 
+			[:transactionsCollection :account | transactionsCollection addAll: account transactions]! !
+
+!testRun: #PortfolioTest #test01emptyPortfolioHas0Balance stamp: 'Alex 10/19/2023 14:25:07'!
+PASSED!
+
+!testRun: #PortfolioTest #test02addOneAccountToPortfolioAndBalanceOfPortfolioIsThatAccountBalance stamp: 'Alex 10/19/2023 14:25:07'!
+PASSED!
+
+!testRun: #PortfolioTest #test04addMoraThanOneAccountReturnsTheBalanceOfAllAccounts stamp: 'Alex 10/19/2023 14:25:07'!
+PASSED!
+
+!testRun: #PortfolioTest #test06noTransactionIfAccountsDoestHaveTransactions stamp: 'Alex 10/19/2023 14:25:07'!
+PASSED!
+
+!testRun: #PortfolioTest #test07oneAccountAddedToPortfolioAllItsTransactionsAreInPortfolio stamp: 'Alex 10/19/2023 14:25:08'!
+PASSED!
+
+!testRun: #PortfolioTest #test08portfolioHasAllTransactionsFromAccountsAdded stamp: 'Alex 10/19/2023 14:25:08'!
+FAILURE!
+
+!testRun: #PortfolioTest #test09PortfolioDoesntHaveTransactionRegistered stamp: 'Alex 10/19/2023 14:25:08'!
+PASSED!
+
+!testRun: #PortfolioTest #test10PortfolioHasTransactionRegistered stamp: 'Alex 10/19/2023 14:25:08'!
+PASSED!
+
+!testRun: #PortfolioTest #test11cantAddAnAccountToAPortfolioMoreThanOnce stamp: 'Alex 10/19/2023 14:25:08'!
+PASSED!
+
+!testRun: #PortfolioTest #test13canAddAnotherPortfolio stamp: 'Alex 10/19/2023 14:25:08'!
+PASSED!
+
+!testRun: #PortfolioTest #test14cantAddAPortfolioWithRepeatedAccounts stamp: 'Alex 10/19/2023 14:25:08'!
+PASSED!
+
+!testRun: #PortfolioTest #test15cantAddAnAccountToAPortfolioThatHavePortfoliosWithThatAccount stamp: 'Alex 10/19/2023 14:25:08'!
+PASSED!
+
+!testRun: #PortfolioTest #test08portfolioHasAllTransactionsFromAccountsAdded stamp: 'Alex 10/19/2023 14:25:08'!
+FAILURE!
+!Portfolio methodsFor: 'transactions' stamp: 'Alex 10/19/2023 14:25:50' prior: 50333140!
+addAccountsTransactionsTo: aTransactionsCollection
+	^accounts do: [:account | aTransactionsCollection addAll: account transactions]! !
+
+!testRun: #PortfolioTest #test01emptyPortfolioHas0Balance stamp: 'Alex 10/19/2023 14:25:57'!
+PASSED!
+
+!testRun: #PortfolioTest #test02addOneAccountToPortfolioAndBalanceOfPortfolioIsThatAccountBalance stamp: 'Alex 10/19/2023 14:25:57'!
+PASSED!
+
+!testRun: #PortfolioTest #test04addMoraThanOneAccountReturnsTheBalanceOfAllAccounts stamp: 'Alex 10/19/2023 14:25:57'!
+PASSED!
+
+!testRun: #PortfolioTest #test06noTransactionIfAccountsDoestHaveTransactions stamp: 'Alex 10/19/2023 14:25:57'!
+PASSED!
+
+!testRun: #PortfolioTest #test07oneAccountAddedToPortfolioAllItsTransactionsAreInPortfolio stamp: 'Alex 10/19/2023 14:25:57'!
+PASSED!
+
+!testRun: #PortfolioTest #test08portfolioHasAllTransactionsFromAccountsAdded stamp: 'Alex 10/19/2023 14:25:57'!
+PASSED!
+
+!testRun: #PortfolioTest #test09PortfolioDoesntHaveTransactionRegistered stamp: 'Alex 10/19/2023 14:25:57'!
+PASSED!
+
+!testRun: #PortfolioTest #test10PortfolioHasTransactionRegistered stamp: 'Alex 10/19/2023 14:25:57'!
+PASSED!
+
+!testRun: #PortfolioTest #test11cantAddAnAccountToAPortfolioMoreThanOnce stamp: 'Alex 10/19/2023 14:25:57'!
+PASSED!
+
+!testRun: #PortfolioTest #test13canAddAnotherPortfolio stamp: 'Alex 10/19/2023 14:25:57'!
+PASSED!
+
+!testRun: #PortfolioTest #test14cantAddAPortfolioWithRepeatedAccounts stamp: 'Alex 10/19/2023 14:25:57'!
+PASSED!
+
+!testRun: #PortfolioTest #test15cantAddAnAccountToAPortfolioThatHavePortfoliosWithThatAccount stamp: 'Alex 10/19/2023 14:25:57'!
+PASSED!
+!Portfolio methodsFor: 'transactions' stamp: 'Alex 10/19/2023 14:31:50' prior: 50333020 overrides: 50332850!
+transactions
+	| allTransactions |
+	allTransactions := OrderedCollection new.
+	
+	self addAccountsTransactionsTo: allTransactions.
+	
+	self addOnlyPortfoliosTransactionsTo: allTransactions.
+	portfolios do: [ :porfolio |
+	    allTransactions addAll: porfolio transactions.
+	].
+
+	^ allTransactions.! !
+!Portfolio methodsFor: 'transactions' stamp: 'Alex 10/19/2023 14:33:38'!
+addOnlyPortfoliosTransactionsTo: aTransactionsCollection.
+	portfolios do: [ :porfolio |
+	    porfolio addAllTransactionsInto: aTransactionsCollection].! !
+!Portfolio methodsFor: 'transactions' stamp: 'Alex 10/19/2023 14:34:59'!
+addAllTransactionsInto: aTransactionsCollection
+
+	self addAccountsTransactionsTo: aTransactionsCollection.
+	self addOnlyPortfoliosTransactionsTo: aTransactionsCollection ! !
+
+!testRun: #PortfolioTest #test01emptyPortfolioHas0Balance stamp: 'Alex 10/19/2023 14:35:46'!
+PASSED!
+
+!testRun: #PortfolioTest #test02addOneAccountToPortfolioAndBalanceOfPortfolioIsThatAccountBalance stamp: 'Alex 10/19/2023 14:35:46'!
+PASSED!
+
+!testRun: #PortfolioTest #test04addMoraThanOneAccountReturnsTheBalanceOfAllAccounts stamp: 'Alex 10/19/2023 14:35:46'!
+PASSED!
+
+!testRun: #PortfolioTest #test06noTransactionIfAccountsDoestHaveTransactions stamp: 'Alex 10/19/2023 14:35:46'!
+PASSED!
+
+!testRun: #PortfolioTest #test07oneAccountAddedToPortfolioAllItsTransactionsAreInPortfolio stamp: 'Alex 10/19/2023 14:35:46'!
+PASSED!
+
+!testRun: #PortfolioTest #test08portfolioHasAllTransactionsFromAccountsAdded stamp: 'Alex 10/19/2023 14:35:46'!
+PASSED!
+
+!testRun: #PortfolioTest #test09PortfolioDoesntHaveTransactionRegistered stamp: 'Alex 10/19/2023 14:35:46'!
+PASSED!
+
+!testRun: #PortfolioTest #test10PortfolioHasTransactionRegistered stamp: 'Alex 10/19/2023 14:35:46'!
+PASSED!
+
+!testRun: #PortfolioTest #test11cantAddAnAccountToAPortfolioMoreThanOnce stamp: 'Alex 10/19/2023 14:35:46'!
+PASSED!
+
+!testRun: #PortfolioTest #test13canAddAnotherPortfolio stamp: 'Alex 10/19/2023 14:35:46'!
+PASSED!
+
+!testRun: #PortfolioTest #test14cantAddAPortfolioWithRepeatedAccounts stamp: 'Alex 10/19/2023 14:35:46'!
+PASSED!
+
+!testRun: #PortfolioTest #test15cantAddAnAccountToAPortfolioThatHavePortfoliosWithThatAccount stamp: 'Alex 10/19/2023 14:35:46'!
+PASSED!
+!BankAccounts methodsFor: 'nil' stamp: 'Alex 10/19/2023 14:37:29'!
+addToPortfolio: aBankAccount
+	self subclassResponsibility ! !
+!Portfolio methodsFor: 'testing' stamp: 'Alex 10/19/2023 14:40:18' prior: 50332119 overrides: 50332854!
+hasRegistered: aTransaction 
+
+	^(accounts anySatisfy: [:account | account transactions includes: aTransaction ]) or: 
+	  [portfolios anySatisfy: [:porfolio | porfolio transactions includes: aTransaction ]]
+	! !
+
+!testRun: #PortfolioTest #test01emptyPortfolioHas0Balance stamp: 'Alex 10/19/2023 14:40:24'!
+PASSED!
+
+!testRun: #PortfolioTest #test02addOneAccountToPortfolioAndBalanceOfPortfolioIsThatAccountBalance stamp: 'Alex 10/19/2023 14:40:24'!
+PASSED!
+
+!testRun: #PortfolioTest #test04addMoraThanOneAccountReturnsTheBalanceOfAllAccounts stamp: 'Alex 10/19/2023 14:40:24'!
+PASSED!
+
+!testRun: #PortfolioTest #test06noTransactionIfAccountsDoestHaveTransactions stamp: 'Alex 10/19/2023 14:40:24'!
+PASSED!
+
+!testRun: #PortfolioTest #test07oneAccountAddedToPortfolioAllItsTransactionsAreInPortfolio stamp: 'Alex 10/19/2023 14:40:24'!
+PASSED!
+
+!testRun: #PortfolioTest #test08portfolioHasAllTransactionsFromAccountsAdded stamp: 'Alex 10/19/2023 14:40:24'!
+PASSED!
+
+!testRun: #PortfolioTest #test09PortfolioDoesntHaveTransactionRegistered stamp: 'Alex 10/19/2023 14:40:24'!
+PASSED!
+
+!testRun: #PortfolioTest #test10PortfolioHasTransactionRegistered stamp: 'Alex 10/19/2023 14:40:24'!
+PASSED!
+
+!testRun: #PortfolioTest #test11cantAddAnAccountToAPortfolioMoreThanOnce stamp: 'Alex 10/19/2023 14:40:24'!
+PASSED!
+
+!testRun: #PortfolioTest #test13canAddAnotherPortfolio stamp: 'Alex 10/19/2023 14:40:24'!
+PASSED!
+
+!testRun: #PortfolioTest #test14cantAddAPortfolioWithRepeatedAccounts stamp: 'Alex 10/19/2023 14:40:24'!
+PASSED!
+
+!testRun: #PortfolioTest #test15cantAddAnAccountToAPortfolioThatHavePortfoliosWithThatAccount stamp: 'Alex 10/19/2023 14:40:24'!
+PASSED!
+!Portfolio methodsFor: 'accounts checks' stamp: 'Alex 10/19/2023 14:41:52' prior: 50332572!
+hasAnyAccountInPortfolio: aPortfolio
+
+	^accounts anySatisfy: [:account | aPortfolio hasAccount: account].! !
+!Portfolio methodsFor: 'accounts checks' stamp: 'Alex 10/19/2023 14:43:07' prior: 50332882!
+hasAPortfolioThatContainsTheAccount: anAccount
+
+	^portfolios anySatisfy: [:portfolio| portfolio hasAccount: anAccount]! !
+
+!testRun: #PortfolioTest #test01emptyPortfolioHas0Balance stamp: 'Alex 10/19/2023 14:43:29'!
+PASSED!
+
+!testRun: #PortfolioTest #test02addOneAccountToPortfolioAndBalanceOfPortfolioIsThatAccountBalance stamp: 'Alex 10/19/2023 14:43:29'!
+PASSED!
+
+!testRun: #PortfolioTest #test04addMoraThanOneAccountReturnsTheBalanceOfAllAccounts stamp: 'Alex 10/19/2023 14:43:29'!
+PASSED!
+
+!testRun: #PortfolioTest #test06noTransactionIfAccountsDoestHaveTransactions stamp: 'Alex 10/19/2023 14:43:29'!
+PASSED!
+
+!testRun: #PortfolioTest #test07oneAccountAddedToPortfolioAllItsTransactionsAreInPortfolio stamp: 'Alex 10/19/2023 14:43:29'!
+PASSED!
+
+!testRun: #PortfolioTest #test08portfolioHasAllTransactionsFromAccountsAdded stamp: 'Alex 10/19/2023 14:43:29'!
+PASSED!
+
+!testRun: #PortfolioTest #test09PortfolioDoesntHaveTransactionRegistered stamp: 'Alex 10/19/2023 14:43:29'!
+PASSED!
+
+!testRun: #PortfolioTest #test10PortfolioHasTransactionRegistered stamp: 'Alex 10/19/2023 14:43:29'!
+PASSED!
+
+!testRun: #PortfolioTest #test11cantAddAnAccountToAPortfolioMoreThanOnce stamp: 'Alex 10/19/2023 14:43:29'!
+PASSED!
+
+!testRun: #PortfolioTest #test13canAddAnotherPortfolio stamp: 'Alex 10/19/2023 14:43:29'!
+PASSED!
+
+!testRun: #PortfolioTest #test14cantAddAPortfolioWithRepeatedAccounts stamp: 'Alex 10/19/2023 14:43:29'!
+PASSED!
+
+!testRun: #PortfolioTest #test15cantAddAnAccountToAPortfolioThatHavePortfoliosWithThatAccount stamp: 'Alex 10/19/2023 14:43:29'!
+PASSED!
+!Portfolio methodsFor: 'transactions' stamp: 'Alex 10/19/2023 14:48:07' prior: 50333251 overrides: 50332850!
+transactions
+	| allTransactions |
+	allTransactions := OrderedCollection new.
+	
+	self addAccountsTransactionsTo: allTransactions.
+	
+	self addOnlyPortfoliosTransactionsTo: allTransactions.
+	^ allTransactions.! !
+
+!testRun: #PortfolioTest #test01emptyPortfolioHas0Balance stamp: 'Alex 10/19/2023 14:48:10'!
+PASSED!
+
+!testRun: #PortfolioTest #test02addOneAccountToPortfolioAndBalanceOfPortfolioIsThatAccountBalance stamp: 'Alex 10/19/2023 14:48:10'!
+PASSED!
+
+!testRun: #PortfolioTest #test04addMoraThanOneAccountReturnsTheBalanceOfAllAccounts stamp: 'Alex 10/19/2023 14:48:10'!
+PASSED!
+
+!testRun: #PortfolioTest #test06noTransactionIfAccountsDoestHaveTransactions stamp: 'Alex 10/19/2023 14:48:10'!
+PASSED!
+
+!testRun: #PortfolioTest #test07oneAccountAddedToPortfolioAllItsTransactionsAreInPortfolio stamp: 'Alex 10/19/2023 14:48:10'!
+PASSED!
+
+!testRun: #PortfolioTest #test08portfolioHasAllTransactionsFromAccountsAdded stamp: 'Alex 10/19/2023 14:48:10'!
+PASSED!
+
+!testRun: #PortfolioTest #test09PortfolioDoesntHaveTransactionRegistered stamp: 'Alex 10/19/2023 14:48:10'!
+PASSED!
+
+!testRun: #PortfolioTest #test10PortfolioHasTransactionRegistered stamp: 'Alex 10/19/2023 14:48:10'!
+PASSED!
+
+!testRun: #PortfolioTest #test11cantAddAnAccountToAPortfolioMoreThanOnce stamp: 'Alex 10/19/2023 14:48:10'!
+PASSED!
+
+!testRun: #PortfolioTest #test13canAddAnotherPortfolio stamp: 'Alex 10/19/2023 14:48:11'!
+PASSED!
+
+!testRun: #PortfolioTest #test14cantAddAPortfolioWithRepeatedAccounts stamp: 'Alex 10/19/2023 14:48:11'!
+PASSED!
+
+!testRun: #PortfolioTest #test15cantAddAnAccountToAPortfolioThatHavePortfoliosWithThatAccount stamp: 'Alex 10/19/2023 14:48:11'!
+PASSED!
+!Portfolio methodsFor: 'transactions' stamp: 'Alex 10/19/2023 14:48:42' prior: 50333263!
+addOnlyPortfoliosTransactionsTo: aTransactionsCollection.
+	portfolios do: [ :porfolio | porfolio addAllTransactionsInto: aTransactionsCollection].! !
+
+----SNAPSHOT----(19 October 2023 14:51:58) CuisUniversity-Portfolio1-latest-version.image priorSource: 10402266!
+
+----QUIT----(19 October 2023 14:54:23) CuisUniversity-Portfolio1-latest-version.image priorSource: 59415!
