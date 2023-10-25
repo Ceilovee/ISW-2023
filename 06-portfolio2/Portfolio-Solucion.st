@@ -305,6 +305,115 @@ test07AccountKnowsItsTransactions
 ! !
 
 
+!classDefinition: #ReportTest category: 'Portfolio-Solucion'!
+TestCase subclass: #ReportTest
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Portfolio-Solucion'!
+
+!ReportTest methodsFor: 'as yet unclassified' stamp: 'cielo ale 10/23/2023 20:31:59'!
+test01accountSumaryReturnsBalance0WhenNoTransactions
+	| account report expectedReport |
+	account := ReceptiveAccount new.
+	report := AccountSumary from: account.
+	expectedReport := OrderedCollection new.
+	expectedReport add: 'Balance = 0'.
+	self
+		assert: report printReport
+		equals: expectedReport.! !
+
+!ReportTest methodsFor: 'as yet unclassified' stamp: 'cielo ale 10/23/2023 20:32:43'!
+test02accountSumaryReturnsBalanceAndTransactionsCorrectly
+	| account report expectedReport |
+	account := ReceptiveAccount new.
+	Deposit
+		register: 100
+		on: account.
+	report := AccountSumary from: account.
+	expectedReport := OrderedCollection new.
+	expectedReport add: 'Depósito por 100'.
+	expectedReport add: 'Balance = 100'.
+	self
+		assert: report printReport
+		equals: expectedReport.! !
+
+!ReportTest methodsFor: 'as yet unclassified' stamp: 'cielo ale 10/23/2023 20:35:01'!
+test03accountSumaryReturnsBalanceAndWithdrawCorrectly
+	| account report expectedReport |
+	account := ReceptiveAccount new.
+	Withdraw 
+		register: 100
+		on: account.
+	report := AccountSumary from: account.
+	expectedReport := OrderedCollection new.
+	expectedReport add: 'Extracción por 100'.
+	expectedReport add: 'Balance = -100'.
+	self
+		assert: report printReport
+		equals: expectedReport.! !
+
+!ReportTest methodsFor: 'as yet unclassified' stamp: 'cielo ale 10/23/2023 21:36:03'!
+test04accountSumaryReturnsBalanceAndTransferCorrectly
+	| accountSend accountReceive reportSend reportReceive expectedReport1 expectedReport2|
+	accountSend := ReceptiveAccount new.
+	accountReceive := ReceptiveAccount new.
+	Transfer register: 100 from: accountSend to: accountReceive .
+	reportSend := AccountSumary from: accountSend .
+	reportReceive := AccountSumary from: accountReceive.
+	expectedReport1 := OrderedCollection new.
+	expectedReport1 add: 'Entrada por transferencia de 100'.
+	expectedReport1 add: 'Balance = 100'.
+	
+	expectedReport2 := OrderedCollection new.
+	expectedReport2 add: 'Salida por transferencia de 100'.
+	expectedReport2 add: 'Balance = -100'.
+	self
+		assert: reportReceive printReport
+		equals: expectedReport1.
+	self assert: reportSend printReport equals: expectedReport2 .! !
+
+!ReportTest methodsFor: 'as yet unclassified' stamp: 'cielo ale 10/24/2023 19:35:47'!
+test05portfolioSumaryReturnsBalanceAndTransferCorrectly
+	| accountSend accountReceive report expectedReport portfolio|
+	accountSend := ReceptiveAccount new.
+	accountReceive := ReceptiveAccount new.
+	Transfer register: 100 from: accountSend to: accountReceive .
+	portfolio := Portfolio new.
+	portfolio add: accountReceive .
+	portfolio add: accountSend .
+	report := AccountSumary from: portfolio .
+
+	expectedReport := OrderedCollection new.
+	expectedReport add: 'Entrada por transferencia de 100'.
+	expectedReport add: 'Salida por transferencia de 100'.
+	expectedReport add: 'Balance = 0'.
+	self assert: report printReport equals: expectedReport ! !
+
+!ReportTest methodsFor: 'as yet unclassified' stamp: 'cielo ale 10/24/2023 21:16:05'!
+test06accountTransferNetReturnsBalance0WhenNoTransactions
+	| account report |
+	account := ReceptiveAccount new.
+	report := TransferNet from: account.
+
+	self
+		assert: report printReport
+		equals: 'Balance = 0'.! !
+
+!ReportTest methodsFor: 'as yet unclassified' stamp: 'cielo ale 10/24/2023 21:16:46'!
+test07accountTransferNetReturnsBalanceAndTransferCorrectly
+	| accountSend accountReceive reportSend reportReceive |
+	accountSend := ReceptiveAccount new.
+	accountReceive := ReceptiveAccount new.
+	Transfer register: 100 from: accountSend to: accountReceive .
+	reportSend := TransferNet from: accountSend .
+	reportReceive := TransferNet from: accountReceive.
+	
+	
+	self assert: reportReceive printReport equals: 'Balance = 100'.
+	self assert: reportSend printReport equals: 'Balance = -100' .! !
+
+
 !classDefinition: #TransferTest category: 'Portfolio-Solucion'!
 TestCase subclass: #TransferTest
 	instanceVariableNames: ''
@@ -527,6 +636,13 @@ signalCanNotAddAccount
 	
 	self error: self class canNotAddAccountErrorMessage! !
 
+
+!Portfolio methodsFor: 'reports' stamp: 'cielo ale 10/24/2023 19:41:35'!
+addTransactionsToSumary: summary for: anAccountSumary 
+	self transactions do: [:transaction | transaction printFor: anAccountSumary in: summary ].
+	
+	^summary! !
+
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
 !classDefinition: 'Portfolio class' category: 'Portfolio-Solucion'!
@@ -573,6 +689,14 @@ addTransactionsTo: aCollectionOfTransactions
 
 	aCollectionOfTransactions addAll: transactions ! !
 
+!ReceptiveAccount methodsFor: 'transactions' stamp: 'cielo ale 10/24/2023 21:36:46'!
+addTransactionsToSumary: report for: summary
+	"transactions do: [ :transaction |
+	    transaction printFor: summary in: report]."
+	transactions inject: report into: [ :reportIterative :transaction |
+	    transaction printFor: summary in: reportIterative].
+	^ report.! !
+
 !ReceptiveAccount methodsFor: 'transactions' stamp: 'HernanWilkinson 7/13/2011 18:37'!
 register: aTransaction
 
@@ -605,10 +729,88 @@ isComposedBy: anAccount
 	^self = anAccount ! !
 
 
+!ReceptiveAccount methodsFor: 'composition' stamp: 'cielo ale 10/23/2023 21:55:16'!
+accountSummary
+
+	| accountSummary |
+	accountSummary := AccountSumary for: self.
+	
+	^accountSummary printReport.! !
+
 !ReceptiveAccount methodsFor: 'composition' stamp: 'HAW 5/25/2019 12:03:32'!
 addedTo: aPortfolio 
 	
 	! !
+
+
+!classDefinition: #AccountSumary category: 'Portfolio-Solucion'!
+Object subclass: #AccountSumary
+	instanceVariableNames: 'account'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Portfolio-Solucion'!
+
+!AccountSumary methodsFor: 'as yet unclassified' stamp: 'cielo ale 10/24/2023 19:22:09'!
+addDepositOf: value in: report
+
+	 report add: ('Depósito por ' , value printString).
+	^report.
+	
+	
+
+	! !
+
+!AccountSumary methodsFor: 'as yet unclassified' stamp: 'cielo ale 10/24/2023 19:23:30'!
+addTransferReceiveOf: value in: report
+
+	 report add: ('Entrada por transferencia de ' , value printString).
+	^report.
+	
+	
+
+	! !
+
+!AccountSumary methodsFor: 'as yet unclassified' stamp: 'cielo ale 10/24/2023 19:23:16'!
+addTransferSendOf: value in: report
+
+	 report add: ('Salida por transferencia de ' , value printString).
+	^report.
+	
+	
+
+	! !
+
+!AccountSumary methodsFor: 'as yet unclassified' stamp: 'cielo ale 10/24/2023 19:22:53'!
+addWithdrawOf: value in: report
+
+	 report add: ('Extracción por ' , value printString).
+	^report.
+	
+	
+
+	! !
+
+!AccountSumary methodsFor: 'as yet unclassified' stamp: 'cielo ale 10/23/2023 21:28:11'!
+from: anAccount
+	account := anAccount! !
+
+!AccountSumary methodsFor: 'as yet unclassified' stamp: 'cielo ale 10/24/2023 19:16:31'!
+printReport
+	| summary |
+	summary := OrderedCollection new.
+	account addTransactionsToSumary: summary for: self.
+	summary add: 'Balance = ' , account balance printString.
+	^ summary.! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'AccountSumary class' category: 'Portfolio-Solucion'!
+AccountSumary class
+	instanceVariableNames: ''!
+
+!AccountSumary class methodsFor: 'class initialization' stamp: 'cielo ale 10/23/2023 21:26:55'!
+from: anAccount
+	^self new from: anAccount! !
 
 
 !classDefinition: #AccountTransaction category: 'Portfolio-Solucion'!
@@ -658,6 +860,13 @@ initializeFor: aValue
 
 	value := aValue ! !
 
+
+!Deposit methodsFor: 'value' stamp: 'cielo ale 10/24/2023 19:20:38'!
+printFor: summary in: report
+	
+	^summary addDepositOf: value in: report.
+	
+	! !
 
 !Deposit methodsFor: 'value' stamp: 'HernanWilkinson 7/13/2011 18:38'!
 value
@@ -713,6 +922,11 @@ affectBalance: aBalance
 
 	^transfer affectBalanceForReceivingAccount: aBalance .! !
 
+!TransferReceive methodsFor: 'balance' stamp: 'cielo ale 10/24/2023 19:29:21'!
+printFor: summary in: report
+	
+	^transfer printReceiveFor: summary in: report! !
+
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
 !classDefinition: 'TransferReceive class' category: 'Portfolio-Solucion'!
@@ -736,6 +950,11 @@ TransferPart subclass: #TransferSend
 affectBalance: aBalance 
 
 	^transfer affectBalanceForSendingAccount: aBalance .! !
+
+!TransferSend methodsFor: 'balance' stamp: 'cielo ale 10/24/2023 19:29:42'!
+printFor: summary in: report
+	
+	^transfer printSendFor: summary in: report! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -761,6 +980,11 @@ initializeFor: aValue
 
 	value := aValue ! !
 
+
+!Withdraw methodsFor: 'value' stamp: 'cielo ale 10/24/2023 19:25:06'!
+printFor: summary in: report
+	
+	^summary addWithdrawOf: value in: report.! !
 
 !Withdraw methodsFor: 'value' stamp: 'HernanWilkinson 7/13/2011 18:33'!
 value
@@ -802,6 +1026,16 @@ register: aValue from: anAccountSending to: anAccountReceive
 	anAccountReceive register: legReceiving .
 	! !
 
+
+!Transfer methodsFor: 'accessing' stamp: 'cielo ale 10/24/2023 19:28:32'!
+printReceiveFor: summary in: report
+	
+	^summary addTransferReceiveOf: value in: report.! !
+
+!Transfer methodsFor: 'accessing' stamp: 'cielo ale 10/24/2023 19:29:00'!
+printSendFor: summary in: report
+	
+	^summary addTransferSendOf: value in: report.! !
 
 !Transfer methodsFor: 'accessing' stamp: 'cielo ale 10/22/2023 18:36:24'!
 receivingLeg
@@ -854,3 +1088,56 @@ register: value from: accountSending to: accountReceive
 theReceivingAndSendingAccountCanNotBeTheSame
 
 	^'the Receiving And Sending Account Can Not Be The Same!!'! !
+
+
+!classDefinition: #TransferNet category: 'Portfolio-Solucion'!
+Object subclass: #TransferNet
+	instanceVariableNames: 'account'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Portfolio-Solucion'!
+
+!TransferNet methodsFor: 'as yet unclassified' stamp: 'cielo ale 10/24/2023 21:22:01'!
+addDepositOf: value in: report
+
+	^report! !
+
+!TransferNet methodsFor: 'as yet unclassified' stamp: 'cielo ale 10/24/2023 21:15:44'!
+addTransferReceiveOf: value in: report
+
+	^report + value.! !
+
+!TransferNet methodsFor: 'as yet unclassified' stamp: 'cielo ale 10/24/2023 21:15:20'!
+addTransferSendOf: value in: report
+
+	^report - value .! !
+
+!TransferNet methodsFor: 'as yet unclassified' stamp: 'cielo ale 10/24/2023 21:21:53'!
+addWithdrawOf: value in: report
+
+	^report! !
+
+!TransferNet methodsFor: 'as yet unclassified' stamp: 'cielo ale 10/24/2023 21:07:36'!
+from: anAccount
+	
+	account := anAccount ! !
+
+!TransferNet methodsFor: 'as yet unclassified' stamp: 'cielo ale 10/24/2023 21:29:30'!
+printReport
+	|value|
+	
+	value := 0.
+	account addTransactionsToSumary: value for: self.
+
+	
+	^'Balance = ', value printString .! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'TransferNet class' category: 'Portfolio-Solucion'!
+TransferNet class
+	instanceVariableNames: ''!
+
+!TransferNet class methodsFor: 'as yet unclassified' stamp: 'cielo ale 10/24/2023 21:07:20'!
+from: anAccount
+	^self new from: anAccount! !
