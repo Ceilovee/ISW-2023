@@ -689,6 +689,10 @@ addTransactionsTo: aCollectionOfTransactions
 
 	aCollectionOfTransactions addAll: transactions ! !
 
+!ReceptiveAccount methodsFor: 'transactions' stamp: 'Alex} 10/25/2023 11:46:30'!
+addTransactionsToSumary: summary
+	transactions do: [:transaction | transaction printFor: summary].! !
+
 !ReceptiveAccount methodsFor: 'transactions' stamp: 'cielo ale 10/24/2023 21:36:46'!
 addTransactionsToSumary: report for: summary
 	"transactions do: [ :transaction |
@@ -745,10 +749,15 @@ addedTo: aPortfolio
 
 !classDefinition: #AccountSumary category: 'Portfolio-Solucion'!
 Object subclass: #AccountSumary
-	instanceVariableNames: 'account'
+	instanceVariableNames: 'account summary'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Portfolio-Solucion'!
+
+!AccountSumary methodsFor: 'as yet unclassified' stamp: 'Alex} 10/25/2023 11:57:49'!
+addDeposit: aDeposit
+	summary add: ('Depósito por ' , aDeposit value printString).
+	! !
 
 !AccountSumary methodsFor: 'as yet unclassified' stamp: 'cielo ale 10/24/2023 19:22:09'!
 addDepositOf: value in: report
@@ -757,6 +766,12 @@ addDepositOf: value in: report
 	^report.
 	
 	
+
+	! !
+
+!AccountSumary methodsFor: 'as yet unclassified' stamp: 'Alex} 10/25/2023 11:59:28'!
+addTransferReceive: aTransferReceive
+	summary add: ('Entrada por transferencia de ' , aTransferReceive value printString).
 
 	! !
 
@@ -770,6 +785,10 @@ addTransferReceiveOf: value in: report
 
 	! !
 
+!AccountSumary methodsFor: 'as yet unclassified' stamp: 'Alex} 10/25/2023 12:05:54'!
+addTransferSend: aTransferSend
+	summary add: ('Salida por transferencia de ' , aTransferSend value printString)! !
+
 !AccountSumary methodsFor: 'as yet unclassified' stamp: 'cielo ale 10/24/2023 19:23:16'!
 addTransferSendOf: value in: report
 
@@ -779,6 +798,11 @@ addTransferSendOf: value in: report
 	
 
 	! !
+
+!AccountSumary methodsFor: 'as yet unclassified' stamp: 'Alex} 10/25/2023 12:06:09'!
+addWithdraw: aWithdraw
+	summary add: ('Extracción por ' , aWithdraw value printString)
+! !
 
 !AccountSumary methodsFor: 'as yet unclassified' stamp: 'cielo ale 10/24/2023 19:22:53'!
 addWithdrawOf: value in: report
@@ -794,11 +818,10 @@ addWithdrawOf: value in: report
 from: anAccount
 	account := anAccount! !
 
-!AccountSumary methodsFor: 'as yet unclassified' stamp: 'cielo ale 10/24/2023 19:16:31'!
+!AccountSumary methodsFor: 'as yet unclassified' stamp: 'Alex} 10/25/2023 12:01:56'!
 printReport
-	| summary |
 	summary := OrderedCollection new.
-	account addTransactionsToSumary: summary for: self.
+	account addTransactionsToSumary: self.
 	summary add: 'Balance = ' , account balance printString.
 	^ summary.! !
 
@@ -861,6 +884,10 @@ initializeFor: aValue
 	value := aValue ! !
 
 
+!Deposit methodsFor: 'value' stamp: 'Alex} 10/25/2023 11:55:32'!
+printFor: report
+	^report addDeposit: self.! !
+
 !Deposit methodsFor: 'value' stamp: 'cielo ale 10/24/2023 19:20:38'!
 printFor: summary in: report
 	
@@ -922,10 +949,20 @@ affectBalance: aBalance
 
 	^transfer affectBalanceForReceivingAccount: aBalance .! !
 
+!TransferReceive methodsFor: 'balance' stamp: 'Alex} 10/25/2023 11:53:56'!
+printFor: report
+	
+	^report addTransferReceive: self! !
+
 !TransferReceive methodsFor: 'balance' stamp: 'cielo ale 10/24/2023 19:29:21'!
 printFor: summary in: report
 	
 	^transfer printReceiveFor: summary in: report! !
+
+
+!TransferReceive methodsFor: 'as yet unclassified' stamp: 'Alex} 10/25/2023 11:42:01'!
+value
+	^transfer value! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -951,10 +988,20 @@ affectBalance: aBalance
 
 	^transfer affectBalanceForSendingAccount: aBalance .! !
 
+!TransferSend methodsFor: 'balance' stamp: 'Alex} 10/25/2023 11:54:34'!
+printFor: report
+	
+	^report addTransferSend: self! !
+
 !TransferSend methodsFor: 'balance' stamp: 'cielo ale 10/24/2023 19:29:42'!
 printFor: summary in: report
 	
 	^transfer printSendFor: summary in: report! !
+
+
+!TransferSend methodsFor: 'as yet unclassified' stamp: 'Alex} 10/25/2023 11:41:45'!
+value
+	^transfer  value! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -980,6 +1027,11 @@ initializeFor: aValue
 
 	value := aValue ! !
 
+
+!Withdraw methodsFor: 'value' stamp: 'Alex} 10/25/2023 11:52:47'!
+printFor: report
+	
+	^report addWithdraw: self.! !
 
 !Withdraw methodsFor: 'value' stamp: 'cielo ale 10/24/2023 19:25:06'!
 printFor: summary in: report
@@ -1044,6 +1096,10 @@ receivingLeg
 !Transfer methodsFor: 'accessing' stamp: 'cielo ale 10/22/2023 18:36:01'!
 sendingLeg
 	^legSending ! !
+
+!Transfer methodsFor: 'accessing' stamp: 'Alex} 10/25/2023 11:41:16'!
+value
+	^value! !
 
 
 !Transfer methodsFor: 'affectBalance' stamp: 'cielo ale 10/22/2023 18:34:17'!
