@@ -312,7 +312,7 @@ TestCase subclass: #ReportTest
 	poolDictionaries: ''
 	category: 'Portfolio-Solucion'!
 
-!ReportTest methodsFor: 'as yet unclassified' stamp: 'cielo 10/25/2023 21:17:29'!
+!ReportTest methodsFor: 'Test' stamp: 'Alex 10/26/2023 14:33:53'!
 test01accountSumaryReturnsBalance0WhenNoTransactions
 	| account report expectedReport |
 	account := ReceptiveAccount new.
@@ -323,7 +323,7 @@ test01accountSumaryReturnsBalance0WhenNoTransactions
 		assert: report printReport
 		equals: expectedReport.! !
 
-!ReportTest methodsFor: 'as yet unclassified' stamp: 'cielo 10/25/2023 21:17:29'!
+!ReportTest methodsFor: 'Test' stamp: 'Alex 10/26/2023 14:33:52'!
 test02accountSumaryReturnsBalanceAndTransactionsCorrectly
 	| account report expectedReport |
 	account := ReceptiveAccount new.
@@ -338,7 +338,7 @@ test02accountSumaryReturnsBalanceAndTransactionsCorrectly
 		assert: report printReport
 		equals: expectedReport.! !
 
-!ReportTest methodsFor: 'as yet unclassified' stamp: 'cielo 10/25/2023 21:17:29'!
+!ReportTest methodsFor: 'Test' stamp: 'Alex 10/26/2023 14:33:52'!
 test03accountSumaryReturnsBalanceAndWithdrawCorrectly
 	| account report expectedReport |
 	account := ReceptiveAccount new.
@@ -353,7 +353,7 @@ test03accountSumaryReturnsBalanceAndWithdrawCorrectly
 		assert: report printReport
 		equals: expectedReport.! !
 
-!ReportTest methodsFor: 'as yet unclassified' stamp: 'cielo 10/25/2023 21:17:29'!
+!ReportTest methodsFor: 'Test' stamp: 'Alex 10/26/2023 14:33:52'!
 test04accountSumaryReturnsBalanceAndTransferCorrectly
 	| accountSend accountReceive reportSend reportReceive expectedReport1 expectedReport2|
 	accountSend := ReceptiveAccount new.
@@ -373,7 +373,7 @@ test04accountSumaryReturnsBalanceAndTransferCorrectly
 		equals: expectedReport1.
 	self assert: reportSend printReport equals: expectedReport2 .! !
 
-!ReportTest methodsFor: 'as yet unclassified' stamp: 'cielo 10/25/2023 21:17:29'!
+!ReportTest methodsFor: 'Test' stamp: 'Alex 10/26/2023 14:33:53'!
 test05portfolioSumaryReturnsBalanceAndTransferCorrectly
 	| accountSend accountReceive report expectedReport portfolio|
 	accountSend := ReceptiveAccount new.
@@ -390,17 +390,16 @@ test05portfolioSumaryReturnsBalanceAndTransferCorrectly
 	expectedReport add: 'Balance = 0'.
 	self assert: report printReport equals: expectedReport ! !
 
-!ReportTest methodsFor: 'as yet unclassified' stamp: 'cielo ale 10/24/2023 21:16:05'!
+!ReportTest methodsFor: 'Test' stamp: 'Alex 10/26/2023 14:46:22'!
 test06accountTransferNetReturnsBalance0WhenNoTransactions
 	| account report |
 	account := ReceptiveAccount new.
 	report := TransferNet from: account.
 
 	self
-		assert: report printReport
-		equals: 'Balance = 0'.! !
+		assert: report printReport equals: 0.! !
 
-!ReportTest methodsFor: 'as yet unclassified' stamp: 'cielo ale 10/24/2023 21:16:46'!
+!ReportTest methodsFor: 'Test' stamp: 'Alex 10/26/2023 14:46:42'!
 test07accountTransferNetReturnsBalanceAndTransferCorrectly
 	| accountSend accountReceive reportSend reportReceive |
 	accountSend := ReceptiveAccount new.
@@ -410,10 +409,10 @@ test07accountTransferNetReturnsBalanceAndTransferCorrectly
 	reportReceive := TransferNet from: accountReceive.
 	
 	
-	self assert: reportReceive printReport equals: 'Balance = 100'.
-	self assert: reportSend printReport equals: 'Balance = -100' .! !
+	self assert: reportReceive printReport equals: 100.
+	self assert: reportSend printReport equals: -100 .! !
 
-!ReportTest methodsFor: 'as yet unclassified' stamp: 'cielo 10/26/2023 00:05:30'!
+!ReportTest methodsFor: 'Test' stamp: 'cielo 10/26/2023 00:05:30'!
 test08TreeReportforEmptyPortfolio
 
 	| expectedReport portfolio report |
@@ -425,7 +424,7 @@ test08TreeReportforEmptyPortfolio
 	
 	self assert: report printReport equals: expectedReport.! !
 
-!ReportTest methodsFor: 'as yet unclassified' stamp: 'cielo 10/26/2023 00:12:00'!
+!ReportTest methodsFor: 'Test' stamp: 'Alex 10/26/2023 16:34:06'!
 test09TreeReportforPortfolioWithOneAccount
 
 	| expectedReport portfolio report account |
@@ -435,11 +434,11 @@ test09TreeReportforPortfolioWithOneAccount
 	report := TreeReport for: portfolio.
 	expectedReport := OrderedCollection new.
 	expectedReport add: portfolio nameOf.
-	expectedReport add: account nameOf.
+	expectedReport add: '   ' , account nameOf.
 	
 	self assert: report printReport equals: expectedReport.! !
 
-!ReportTest methodsFor: 'as yet unclassified' stamp: 'cielo 10/26/2023 15:14:01'!
+!ReportTest methodsFor: 'Test' stamp: 'Alex 10/26/2023 16:33:39'!
 test10TreeReportforPortfolioWithOneAccountHasEspace
 
 	| expectedReport portfolio report account |
@@ -449,7 +448,26 @@ test10TreeReportforPortfolioWithOneAccountHasEspace
 	report := TreeReport for: portfolio.
 	expectedReport := OrderedCollection new.
 	expectedReport add: portfolio nameOf.
-	expectedReport add: (' ', account nameOf).
+	expectedReport add: ('   ', account nameOf).
+	
+	self assert: report printReport equals: expectedReport.! !
+
+!ReportTest methodsFor: 'Test' stamp: 'Alex 10/26/2023 16:49:40'!
+test11TreeReportforPortfolioWithPortfolioWithTwoAccountHasTheRespectiveSpaces
+
+	| expectedReport portfolio portfolioInPortfolio report account1 account2 |
+	account1 := ReceptiveAccount named: 'Cuenta 1'.
+	account2 := ReceptiveAccount named: 'Cuenta 2'.
+	portfolioInPortfolio := Portfolio with: account1 named: 'Portfolio hijo'.
+	portfolioInPortfolio add: account2.
+	portfolio := Portfolio with: portfolioInPortfolio named: 'Portfolio padre'.
+	
+	report := TreeReport for: portfolio.
+	expectedReport := OrderedCollection new.
+	expectedReport add: portfolio nameOf.
+	expectedReport add: ('   ', portfolioInPortfolio nameOf).
+	expectedReport add: ('      ', account1 nameOf).
+	expectedReport add: ('      ', account2 nameOf).
 	
 	self assert: report printReport equals: expectedReport.! !
 
@@ -461,7 +479,7 @@ TestCase subclass: #TransferTest
 	poolDictionaries: ''
 	category: 'Portfolio-Solucion'!
 
-!TransferTest methodsFor: 'as yet unclassified' stamp: 'cielo ale 10/22/2023 17:25:04'!
+!TransferTest methodsFor: 'Test' stamp: 'cielo ale 10/22/2023 17:25:04'!
 test01doATransferAffectsBalanceFromBothAccounts
 
 	| accountSending accountReceive|
@@ -475,7 +493,7 @@ test01doATransferAffectsBalanceFromBothAccounts
 	
 ! !
 
-!TransferTest methodsFor: 'as yet unclassified' stamp: 'cielo ale 10/22/2023 18:19:03'!
+!TransferTest methodsFor: 'Test' stamp: 'cielo ale 10/22/2023 18:19:03'!
 test02doATransferThenBothAccountsHaveItRegistered
 
 	| accountSending accountReceive transfer|
@@ -489,7 +507,7 @@ test02doATransferThenBothAccountsHaveItRegistered
 	
 ! !
 
-!TransferTest methodsFor: 'as yet unclassified' stamp: 'cielo ale 10/22/2023 18:41:41'!
+!TransferTest methodsFor: 'Test' stamp: 'cielo ale 10/22/2023 18:41:41'!
 test03cantSendToTheSameAccount
 
 	| account |
@@ -505,7 +523,7 @@ test03cantSendToTheSameAccount
 	
 ! !
 
-!TransferTest methodsFor: 'as yet unclassified' stamp: 'cielo ale 10/22/2023 18:51:43'!
+!TransferTest methodsFor: 'Test' stamp: 'cielo ale 10/22/2023 18:51:43'!
 test04CanTransferOnlyPositiveValues
 
 	| accountSending accountReceive |
@@ -526,7 +544,7 @@ test04CanTransferOnlyPositiveValues
 
 !classDefinition: #Account category: 'Portfolio-Solucion'!
 Object subclass: #Account
-	instanceVariableNames: ''
+	instanceVariableNames: 'name'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Portfolio-Solucion'!
@@ -572,22 +590,22 @@ Account subclass: 'Portfolio'
 	poolDictionaries: ''
 	category: 'Portfolio-Solucion'!
 
-!Portfolio methodsFor: 'accounts management' stamp: 'HAW 5/25/2019 11:49:20'!
+!Portfolio methodsFor: 'accounts management' stamp: 'Alex 10/26/2023 16:14:15'!
 accountsIncludes: anAccount
 
 	^accounts includes: anAccount ! !
 
-!Portfolio methodsFor: 'accounts management' stamp: 'HAW 5/25/2019 12:05:04'!
+!Portfolio methodsFor: 'accounts management' stamp: 'Alex 10/26/2023 16:14:26'!
 accountsIsEmpty
 	
 	^accounts isEmpty ! !
 
-!Portfolio methodsFor: 'accounts management' stamp: 'HAW 5/25/2019 11:49:06'!
+!Portfolio methodsFor: 'accounts management' stamp: 'Alex 10/26/2023 16:14:37'!
 accountsSize
 	
 	^accounts size! !
 
-!Portfolio methodsFor: 'accounts management' stamp: 'HAW 5/25/2019 12:19:20'!
+!Portfolio methodsFor: 'accounts management' stamp: 'Alex 10/26/2023 16:14:49'!
 add: accountToAdd
 
 	self assertCanAdd: accountToAdd.
@@ -596,7 +614,7 @@ add: accountToAdd
 	accountToAdd addedTo: self 
 	! !
 
-!Portfolio methodsFor: 'accounts management' stamp: 'HAW 5/25/2019 12:17:31'!
+!Portfolio methodsFor: 'accounts management' stamp: 'Alex 10/26/2023 16:14:59'!
 rootParents
 	
 	| rootParents |
@@ -607,31 +625,32 @@ rootParents
 	^ rootParents! !
 
 
-!Portfolio methodsFor: 'initialization' stamp: 'cielo 10/26/2023 15:35:27'!
+!Portfolio methodsFor: 'initialization' stamp: 'Alex 10/26/2023 16:15:13'!
 initialize
 	name:= ''.
 	accounts := OrderedCollection new.
 	parents := OrderedCollection new.! !
 
-!Portfolio methodsFor: 'initialization' stamp: 'cielo 10/26/2023 00:10:34'!
+!Portfolio methodsFor: 'initialization' stamp: 'Alex 10/26/2023 16:15:24'!
 initializeNamed: aName
-	name := aName .
+
+	name := aName .
 	accounts := OrderedCollection new.
 	parents := OrderedCollection new.! !
 
 
-!Portfolio methodsFor: 'balance' stamp: 'HAW 5/25/2019 11:19:36'!
+!Portfolio methodsFor: 'balance' stamp: 'Alex 10/26/2023 16:19:30'!
 balance
 	
 	^accounts sum: [ :anAccount | anAccount balance ] ifEmpty: [ 0 ]! !
 
 
-!Portfolio methodsFor: 'transactions' stamp: 'HAW 5/25/2019 11:42:55'!
+!Portfolio methodsFor: 'transactions' stamp: 'Alex 10/26/2023 16:19:52'!
 addTransactionsTo: aCollectionOfTransactions
 
 	accounts do: [ :anAccount | anAccount addTransactionsTo: aCollectionOfTransactions ]! !
 
-!Portfolio methodsFor: 'transactions' stamp: 'HAW 5/25/2019 11:38:32'!
+!Portfolio methodsFor: 'transactions' stamp: 'Alex 10/26/2023 16:19:40'!
 transactions
 	
 	| transactions |
@@ -642,56 +661,56 @@ transactions
 	^transactions ! !
 
 
-!Portfolio methodsFor: 'composition' stamp: 'HAW 5/25/2019 12:02:59'!
+!Portfolio methodsFor: 'composition' stamp: 'Alex 10/26/2023 16:20:03'!
 addedTo: aPortfolio 
 	
 	parents add: aPortfolio ! !
 
 
-!Portfolio methodsFor: 'testing' stamp: 'HAW 5/25/2019 12:20:56'!
+!Portfolio methodsFor: 'testing' stamp: 'Alex 10/26/2023 16:20:32'!
 anyRootParentIsComposedBy: accountToAdd
 
 	^self rootParents anySatisfy: [ :aParent | aParent isComposedBy: accountToAdd]! !
 
-!Portfolio methodsFor: 'testing' stamp: 'HAW 5/25/2019 11:28:29'!
+!Portfolio methodsFor: 'testing' stamp: 'Alex 10/26/2023 16:20:22'!
 hasRegistered: aTransaction
 
 	^accounts anySatisfy: [ :anAccount | anAccount hasRegistered: aTransaction ]! !
 
-!Portfolio methodsFor: 'testing' stamp: 'HAW 5/29/2019 16:24:54'!
+!Portfolio methodsFor: 'testing' stamp: 'Alex 10/26/2023 16:20:13'!
 isComposedBy: anAccount
 
 	^ self = anAccount or: [ accounts anySatisfy: [ :composedAccount | (composedAccount isComposedBy: anAccount) or: [ anAccount isComposedBy: composedAccount ]]]! !
 
 
-!Portfolio methodsFor: 'account management - private' stamp: 'HAW 5/25/2019 12:17:31'!
+!Portfolio methodsFor: 'account management - private' stamp: 'Alex 10/26/2023 16:21:03'!
 addRootParentsTo: rootParents
 
 	parents 
 		ifEmpty: [ rootParents add: self ] 
 		ifNotEmpty: [ parents do: [ :aParent | aParent addRootParentsTo: rootParents ]]! !
 
-!Portfolio methodsFor: 'account management - private' stamp: 'HAW 5/25/2019 12:20:36'!
+!Portfolio methodsFor: 'account management - private' stamp: 'Alex 10/26/2023 16:20:52'!
 assertCanAdd: accountToAdd
 
-	(self anyRootParentIsComposedBy: accountToAdd) ifTrue: [ self signalCanNotAddAccount ].
-! !
+	(self anyRootParentIsComposedBy: accountToAdd) ifTrue: [ self signalCanNotAddAccount ].! !
 
-!Portfolio methodsFor: 'account management - private' stamp: 'HAW 5/25/2019 11:48:34'!
+!Portfolio methodsFor: 'account management - private' stamp: 'Alex 10/26/2023 16:20:43'!
 signalCanNotAddAccount
 	
 	self error: self class canNotAddAccountErrorMessage! !
 
 
-!Portfolio methodsFor: 'reports' stamp: 'cielo 10/25/2023 20:55:06'!
-addTransactionsToSumary: anAccountSumary 
-	self transactions do: [:transaction | transaction printFor: anAccountSumary ].! !
+!Portfolio methodsFor: 'reports' stamp: 'Alex 10/26/2023 16:22:13'!
+addTransactionsToReport: anAccountSumary 
+	self transactions do: [:transaction | transaction printFor: anAccountSumary ].
+! !
 
-!Portfolio methodsFor: 'reports' stamp: 'cielo 10/26/2023 15:29:17'!
+!Portfolio methodsFor: 'reports' stamp: 'Alex 10/26/2023 16:21:31'!
 nameOf
 	^name! !
 
-!Portfolio methodsFor: 'reports' stamp: 'cielo 10/26/2023 15:07:02'!
+!Portfolio methodsFor: 'reports' stamp: 'Alex 10/26/2023 16:46:55'!
 printTreeReportFor: treeReport
 	
 	treeReport addNamePortfolio: name.
@@ -703,36 +722,35 @@ printTreeReportFor: treeReport
 Portfolio class
 	instanceVariableNames: ''!
 
-!Portfolio class methodsFor: 'as yet unclassified' stamp: 'HAW 5/25/2019 11:48:55'!
+!Portfolio class methodsFor: 'error handling' stamp: 'Alex 10/26/2023 16:17:19'!
 canNotAddAccountErrorMessage
 	
 	^'Can not add repeated account to a portfolio'! !
 
-!Portfolio class methodsFor: 'as yet unclassified' stamp: 'HAW 5/25/2019 11:18:21'!
+
+!Portfolio class methodsFor: 'initialization' stamp: 'Alex 10/26/2023 16:15:48'!
+named: aName
+	^self new initializeNamed: aName! !
+
+!Portfolio class methodsFor: 'initialization' stamp: 'Alex 10/26/2023 16:17:03'!
 with: anAccount
 
 	^self new 
 		add: anAccount;
 		yourself! !
 
-!Portfolio class methodsFor: 'as yet unclassified' stamp: 'HAW 5/25/2019 11:23:59'!
+!Portfolio class methodsFor: 'initialization' stamp: 'Alex 10/26/2023 16:16:24'!
+with: account named: aName  
+	^(self new initializeNamed: aName)
+		add: account; yourself.! !
+
+!Portfolio class methodsFor: 'initialization' stamp: 'Alex 10/26/2023 16:16:45'!
 with: anAccount with: anotherAccount
 
 	^self new 
 		add: anAccount;
 		add: anotherAccount;
 		yourself! !
-
-
-!Portfolio class methodsFor: 'class initialization' stamp: 'cielo 10/25/2023 23:59:49'!
-named: aName
-	^self new initializeNamed: aName! !
-
-
-!Portfolio class methodsFor: 'category-name' stamp: 'cielo 10/26/2023 00:11:03'!
-with: account named: aName  
-	^(self new initializeNamed: aName)
-		add: account; yourself.! !
 
 
 !classDefinition: #ReceptiveAccount category: 'Portfolio-Solucion'!
@@ -759,10 +777,6 @@ initializeNamed: aName
 addTransactionsTo: aCollectionOfTransactions
 
 	aCollectionOfTransactions addAll: transactions ! !
-
-!ReceptiveAccount methodsFor: 'transactions' stamp: 'Alex} 10/25/2023 11:46:30'!
-addTransactionsToSumary: summary
-	transactions do: [:transaction | transaction printFor: summary].! !
 
 !ReceptiveAccount methodsFor: 'transactions' stamp: 'cielo 10/26/2023 00:04:33'!
 nameOf
@@ -800,25 +814,20 @@ isComposedBy: anAccount
 	^self = anAccount ! !
 
 
-!ReceptiveAccount methodsFor: 'composition' stamp: 'cielo 10/25/2023 21:17:29'!
-accountSummary
-
-	| accountSummary |
-	accountSummary := AccountSummary for: self.
-	
-	^accountSummary printReport.! !
-
 !ReceptiveAccount methodsFor: 'composition' stamp: 'HAW 5/25/2019 12:03:32'!
 addedTo: aPortfolio 
 	
 	! !
 
-!ReceptiveAccount methodsFor: 'composition' stamp: 'cielo 10/26/2023 15:08:08'!
-printTreeReportFor: aReport
 
-	aReport addNameAccount: name.
+!ReceptiveAccount methodsFor: 'report' stamp: 'Alex 10/26/2023 13:02:42'!
+addTransactionsToReport: aReport
+	transactions do: [:transaction | transaction printFor: aReport].! !
 
-	! !
+!ReceptiveAccount methodsFor: 'report' stamp: 'Alex 10/26/2023 16:46:38'!
+printTreeReportFor: treeReport
+	
+	treeReport addNameAccount: name! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -850,6 +859,12 @@ affectBalance: aBalance forAccount: anAccount
 
 	self subclassResponsibility ! !
 
+
+!AccountTransaction methodsFor: 'for reports' stamp: 'Alex 10/26/2023 12:30:28'!
+printFor: report
+
+	self subclassResponsibility! !
+
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
 !classDefinition: 'AccountTransaction class' category: 'Portfolio-Solucion'!
@@ -880,17 +895,6 @@ initializeFor: aValue
 	value := aValue ! !
 
 
-!Deposit methodsFor: 'value' stamp: 'cielo 10/25/2023 21:06:41'!
-printFor: report
-	^report addDeposit: value .! !
-
-!Deposit methodsFor: 'value' stamp: 'cielo ale 10/24/2023 19:20:38'!
-printFor: summary in: report
-	
-	^summary addDepositOf: value in: report.
-	
-	! !
-
 !Deposit methodsFor: 'value' stamp: 'HernanWilkinson 7/13/2011 18:38'!
 value
 
@@ -902,13 +906,18 @@ affectBalance: aBalance
 
 	^aBalance + value ! !
 
+
+!Deposit methodsFor: 'for reports' stamp: 'Alex 10/26/2023 13:03:26'!
+printFor: report
+	^report addDepositToReport: self.! !
+
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
 !classDefinition: 'Deposit class' category: 'Portfolio-Solucion'!
 Deposit class
 	instanceVariableNames: ''!
 
-!Deposit class methodsFor: 'instance creation' stamp: 'HernanWilkinson 7/13/2011 18:38'!
+!Deposit class methodsFor: 'instance creation' stamp: 'Alex 10/26/2023 14:44:35'!
 for: aValue
 
 	^ self new initializeFor: aValue ! !
@@ -932,6 +941,11 @@ affectBalance: aBalance
 
 	self subclassResponsibility! !
 
+
+!TransferPart methodsFor: 'value' stamp: 'Alex 10/26/2023 14:43:24'!
+value
+	^transfer value! !
+
 
 !classDefinition: #TransferReceive category: 'Portfolio-Solucion'!
 TransferPart subclass: #TransferReceive
@@ -945,15 +959,11 @@ affectBalance: aBalance
 
 	^transfer affectBalanceForReceivingAccount: aBalance .! !
 
-!TransferReceive methodsFor: 'balance' stamp: 'cielo 10/25/2023 21:10:09'!
+
+!TransferReceive methodsFor: 'for report' stamp: 'cielo 10/25/2023 21:10:09'!
 printFor: report
 	
 	transfer printReceiveFor: report! !
-
-
-!TransferReceive methodsFor: 'as yet unclassified' stamp: 'Alex} 10/25/2023 11:42:01'!
-value
-	^transfer value! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -961,7 +971,7 @@ value
 TransferReceive class
 	instanceVariableNames: ''!
 
-!TransferReceive class methodsFor: 'as yet unclassified' stamp: 'cielo ale 10/22/2023 18:30:09'!
+!TransferReceive class methodsFor: 'as yet unclassified' stamp: 'Alex 10/26/2023 14:45:14'!
 from: aTransfer
 
 	^self new initializeFor: aTransfer .! !
@@ -979,15 +989,11 @@ affectBalance: aBalance
 
 	^transfer affectBalanceForSendingAccount: aBalance .! !
 
-!TransferSend methodsFor: 'balance' stamp: 'cielo 10/25/2023 21:10:36'!
+
+!TransferSend methodsFor: 'for report' stamp: 'cielo 10/25/2023 21:10:36'!
 printFor: report
 	
 	transfer printSendFor: report.! !
-
-
-!TransferSend methodsFor: 'as yet unclassified' stamp: 'Alex} 10/25/2023 11:41:45'!
-value
-	^transfer  value! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -995,7 +1001,7 @@ value
 TransferSend class
 	instanceVariableNames: ''!
 
-!TransferSend class methodsFor: 'as yet unclassified' stamp: 'cielo ale 10/22/2023 18:31:06'!
+!TransferSend class methodsFor: 'as yet unclassified' stamp: 'Alex 10/26/2023 14:45:24'!
 from: aTransfer
 
 	^self new initializeFor: aTransfer .! !
@@ -1014,16 +1020,6 @@ initializeFor: aValue
 	value := aValue ! !
 
 
-!Withdraw methodsFor: 'value' stamp: 'cielo 10/25/2023 21:07:01'!
-printFor: report
-	
-	^report addWithdraw: value .! !
-
-!Withdraw methodsFor: 'value' stamp: 'cielo ale 10/24/2023 19:25:06'!
-printFor: summary in: report
-	
-	^summary addWithdrawOf: value in: report.! !
-
 !Withdraw methodsFor: 'value' stamp: 'HernanWilkinson 7/13/2011 18:33'!
 value
 
@@ -1035,13 +1031,19 @@ affectBalance: aBalance
 
 	^aBalance - value! !
 
+
+!Withdraw methodsFor: 'for reports' stamp: 'Alex 10/26/2023 13:03:56'!
+printFor: report
+	
+	^report addWithdrawToReport: self.! !
+
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
 !classDefinition: 'Withdraw class' category: 'Portfolio-Solucion'!
 Withdraw class
 	instanceVariableNames: ''!
 
-!Withdraw class methodsFor: 'instance creation' stamp: 'HernanWilkinson 7/13/2011 18:33'!
+!Withdraw class methodsFor: 'instance creation' stamp: 'Alex 10/26/2023 14:44:49'!
 for: aValue
 
 	^ self new initializeFor: aValue ! !
@@ -1049,27 +1051,33 @@ for: aValue
 
 !classDefinition: #Reports category: 'Portfolio-Solucion'!
 Object subclass: #Reports
-	instanceVariableNames: 'account'
+	instanceVariableNames: 'account report'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Portfolio-Solucion'!
 
-!Reports methodsFor: 'as yet unclassified' stamp: 'cielo 10/25/2023 21:21:42'!
-addDeposit: value
+!Reports methodsFor: 'add' stamp: 'Alex 10/26/2023 12:23:49'!
+addDepositToReport: value
 
 	self subclassResponsibility! !
 
-!Reports methodsFor: 'as yet unclassified' stamp: 'cielo 10/25/2023 21:21:33'!
-addTransferSend: value
+!Reports methodsFor: 'add' stamp: 'Alex 10/26/2023 14:28:37'!
+addTransferReceiveToReport: aTransfer
 
 	self subclassResponsibility! !
 
-!Reports methodsFor: 'as yet unclassified' stamp: 'cielo 10/25/2023 21:21:28'!
-addWithdraw: report
+!Reports methodsFor: 'add' stamp: 'Alex 10/26/2023 12:24:21'!
+addTransferSendToReport: value
 
 	self subclassResponsibility! !
 
-!Reports methodsFor: 'as yet unclassified' stamp: 'cielo 10/25/2023 21:21:05'!
+!Reports methodsFor: 'add' stamp: 'Alex 10/26/2023 13:45:01'!
+addWithdrawToReport: aWithdraw
+
+	self subclassResponsibility! !
+
+
+!Reports methodsFor: 'print' stamp: 'cielo 10/25/2023 21:21:05'!
 printReport
 
 	self subclassResponsibility! !
@@ -1077,41 +1085,48 @@ printReport
 
 !classDefinition: #AccountSummary category: 'Portfolio-Solucion'!
 Reports subclass: #AccountSummary
-	instanceVariableNames: 'summary'
+	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Portfolio-Solucion'!
 
-!AccountSummary methodsFor: 'as yet unclassified' stamp: 'cielo 10/25/2023 21:06:11'!
-addDeposit: aValue
-	summary add: ('Depósito por ' , aValue printString).
-	! !
-
-!AccountSummary methodsFor: 'as yet unclassified' stamp: 'cielo 10/25/2023 21:06:30'!
-addTransferReceive: aValue
-	summary add: ('Entrada por transferencia de ' , aValue printString).
-
-	! !
-
-!AccountSummary methodsFor: 'as yet unclassified' stamp: 'cielo 10/25/2023 21:06:20'!
-addTransferSend: aValue
-	summary add: ('Salida por transferencia de ' , aValue printString)! !
-
-!AccountSummary methodsFor: 'as yet unclassified' stamp: 'cielo 10/25/2023 21:05:53'!
-addWithdraw: aValue
-	summary add: ('Extracción por ' , aValue printString)
-! !
-
-!AccountSummary methodsFor: 'as yet unclassified' stamp: 'cielo ale 10/23/2023 21:28:11'!
-from: anAccount
+!AccountSummary methodsFor: 'Initialization' stamp: 'Alex 10/26/2023 14:31:49'!
+initializeFor: anAccount
 	account := anAccount! !
 
-!AccountSummary methodsFor: 'as yet unclassified' stamp: 'Alex} 10/25/2023 12:01:56'!
+
+!AccountSummary methodsFor: 'add' stamp: 'Alex 10/26/2023 14:37:02'!
+addBalanceToReport
+
+	^ report add: 'Balance = ' , account balance printString! !
+
+!AccountSummary methodsFor: 'add' stamp: 'Alex 10/26/2023 13:08:42'!
+addDepositToReport: aDeposit
+	report add: ('Depósito por ' , aDeposit value printString).
+	! !
+
+!AccountSummary methodsFor: 'add' stamp: 'Alex 10/26/2023 14:37:51'!
+addTransferReceiveToReport: aTransfer
+	report add: ('Entrada por transferencia de ' , aTransfer value printString).
+
+	! !
+
+!AccountSummary methodsFor: 'add' stamp: 'Alex 10/26/2023 14:38:10'!
+addTransferSendToReport: aTransfer
+	report add: ('Salida por transferencia de ' , aTransfer value printString)! !
+
+!AccountSummary methodsFor: 'add' stamp: 'Alex 10/26/2023 14:38:30'!
+addWithdrawToReport: aWithdraw
+	report add: ('Extracción por ' , aWithdraw value printString)
+! !
+
+
+!AccountSummary methodsFor: 'print' stamp: 'Alex 10/26/2023 14:37:02'!
 printReport
-	summary := OrderedCollection new.
-	account addTransactionsToSumary: self.
-	summary add: 'Balance = ' , account balance printString.
-	^ summary.! !
+	report := OrderedCollection new.
+	account addTransactionsToReport: self.
+	self addBalanceToReport.
+	^report.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -1119,41 +1134,43 @@ printReport
 AccountSummary class
 	instanceVariableNames: ''!
 
-!AccountSummary class methodsFor: 'class initialization' stamp: 'cielo ale 10/23/2023 21:26:55'!
+!AccountSummary class methodsFor: 'initialization' stamp: 'Alex 10/26/2023 14:34:29'!
 from: anAccount
-	^self new from: anAccount! !
+	^self new initializeFor: anAccount! !
 
 
 !classDefinition: #TransferNet category: 'Portfolio-Solucion'!
 Reports subclass: #TransferNet
-	instanceVariableNames: 'valueReport'
+	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Portfolio-Solucion'!
 
-!TransferNet methodsFor: 'as yet unclassified' stamp: 'cielo 10/25/2023 21:14:32'!
-addDeposit: value! !
-
-!TransferNet methodsFor: 'as yet unclassified' stamp: 'cielo 10/25/2023 21:14:55'!
-addTransferReceive: aValue 
-	valueReport := valueReport + aValue ! !
-
-!TransferNet methodsFor: 'as yet unclassified' stamp: 'cielo 10/25/2023 21:13:19'!
-addTransferSend: value 
-	valueReport := valueReport - value .! !
-
-!TransferNet methodsFor: 'as yet unclassified' stamp: 'cielo 10/25/2023 21:13:48'!
-addWithdraw:  report! !
-
-!TransferNet methodsFor: 'as yet unclassified' stamp: 'cielo ale 10/24/2023 21:07:36'!
-from: anAccount
+!TransferNet methodsFor: 'Initialization' stamp: 'Alex 10/26/2023 14:31:49'!
+initializeFor: anAccount
 	
 	account := anAccount ! !
 
-!TransferNet methodsFor: 'as yet unclassified' stamp: 'cielo 10/25/2023 21:02:09'!
-printReport	valueReport := 0.
-	account addTransactionsToSumary: self .
-	^'Balance = ', valueReport printString .! !
+
+!TransferNet methodsFor: 'add' stamp: 'Alex 10/26/2023 13:42:53'!
+addDepositToReport: aDeposit! !
+
+!TransferNet methodsFor: 'add' stamp: 'Alex 10/26/2023 13:44:22'!
+addTransferReceiveToReport: aTransfer 
+	report := report + aTransfer value ! !
+
+!TransferNet methodsFor: 'add' stamp: 'Alex 10/26/2023 13:44:22'!
+addTransferSendToReport: aTransfer 
+	report := report - aTransfer value .! !
+
+!TransferNet methodsFor: 'add' stamp: 'Alex 10/26/2023 13:43:03'!
+addWithdrawToReport: aWithdraw! !
+
+
+!TransferNet methodsFor: 'print' stamp: 'Alex 10/26/2023 13:46:03'!
+printReport	report := 0.
+	account addTransactionsToReport: self .
+	^report! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -1161,9 +1178,9 @@ printReport	valueReport := 0.
 TransferNet class
 	instanceVariableNames: ''!
 
-!TransferNet class methodsFor: 'as yet unclassified' stamp: 'cielo ale 10/24/2023 21:07:20'!
+!TransferNet class methodsFor: 'Initialization' stamp: 'Alex 10/26/2023 14:34:17'!
 from: anAccount
-	^self new from: anAccount! !
+	^self new initializeFor: anAccount! !
 
 
 !classDefinition: #Transfer category: 'Portfolio-Solucion'!
@@ -1173,7 +1190,7 @@ Object subclass: #Transfer
 	poolDictionaries: ''
 	category: 'Portfolio-Solucion'!
 
-!Transfer methodsFor: 'initilization' stamp: 'cielo ale 10/22/2023 18:59:29'!
+!Transfer methodsFor: 'initilization' stamp: 'Alex 10/26/2023 14:33:52'!
 register: aValue from: anAccountSending to: anAccountReceive 
 
 	value:= aValue .
@@ -1183,24 +1200,6 @@ register: aValue from: anAccountSending to: anAccountReceive
 	anAccountReceive register: legReceiving .
 	! !
 
-
-!Transfer methodsFor: 'accessing' stamp: 'cielo 10/25/2023 21:09:07'!
-printReceiveFor:  report
-	report addTransferReceive: value .! !
-
-!Transfer methodsFor: 'accessing' stamp: 'cielo ale 10/24/2023 19:28:32'!
-printReceiveFor: summary in: report
-	
-	^summary addTransferReceiveOf: value in: report.! !
-
-!Transfer methodsFor: 'accessing' stamp: 'cielo 10/25/2023 21:11:28'!
-printSendFor: report
-	report addTransferSend: value.! !
-
-!Transfer methodsFor: 'accessing' stamp: 'cielo ale 10/24/2023 19:29:00'!
-printSendFor: summary in: report
-	
-	^summary addTransferSendOf: value in: report.! !
 
 !Transfer methodsFor: 'accessing' stamp: 'cielo ale 10/22/2023 18:36:24'!
 receivingLeg
@@ -1224,6 +1223,15 @@ affectBalanceForReceivingAccount: aBalance
 affectBalanceForSendingAccount: aBalance
 	
 	^aBalance - value ! !
+
+
+!Transfer methodsFor: 'for report' stamp: 'Alex 10/26/2023 13:04:57'!
+printReceiveFor:  report
+	report addTransferReceiveToReport: self .! !
+
+!Transfer methodsFor: 'for report' stamp: 'Alex 10/26/2023 13:05:06'!
+printSendFor: report
+	report addTransferSendToReport: self.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -1266,12 +1274,25 @@ Object subclass: #TreeReport
 	poolDictionaries: ''
 	category: 'Portfolio-Solucion'!
 
-!TreeReport methodsFor: 'as yet unclassified' stamp: 'cielo 10/25/2023 23:52:39'!
+!TreeReport methodsFor: 'add' stamp: 'Alex 10/26/2023 16:06:01'!
+addNameAccount: aName 
+	
+	report add: (space, aName) .! !
+
+!TreeReport methodsFor: 'add' stamp: 'Alex 10/26/2023 16:34:27'!
+addNamePortfolio: aName
+	
+	report add: (space, aName).
+	space:= (space, '   ').! !
+
+
+!TreeReport methodsFor: 'initialization' stamp: 'cielo 10/25/2023 23:52:39'!
 for: aPortfolio
 
 	portfolio := aPortfolio ! !
 
-!TreeReport methodsFor: 'as yet unclassified' stamp: 'cielo 10/26/2023 15:33:43'!
+
+!TreeReport methodsFor: 'actual reporting' stamp: 'Alex 10/26/2023 16:05:02'!
 printReport
 
 	report := OrderedCollection new.
@@ -1279,18 +1300,6 @@ printReport
 	portfolio printTreeReportFor: self.
 	
 	^report! !
-
-
-!TreeReport methodsFor: 'name' stamp: 'cielo 10/26/2023 15:24:58'!
-addNameAccount: aName 
-	
-	report add: (space, aName) .! !
-
-!TreeReport methodsFor: 'name' stamp: 'cielo 10/26/2023 15:33:34'!
-addNamePortfolio: aName
-	
-	report add: (space, aName).
-	space:= (space, ' ').! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
