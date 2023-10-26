@@ -439,6 +439,20 @@ test09TreeReportforPortfolioWithOneAccount
 	
 	self assert: report printReport equals: expectedReport.! !
 
+!ReportTest methodsFor: 'as yet unclassified' stamp: 'cielo 10/26/2023 15:14:01'!
+test10TreeReportforPortfolioWithOneAccountHasEspace
+
+	| expectedReport portfolio report account |
+	account := ReceptiveAccount named: 'Cuenta 1'.
+	portfolio := Portfolio with: account named: 'Portfolio'.
+	
+	report := TreeReport for: portfolio.
+	expectedReport := OrderedCollection new.
+	expectedReport add: portfolio nameOf.
+	expectedReport add: (' ', account nameOf).
+	
+	self assert: report printReport equals: expectedReport.! !
+
 
 !classDefinition: #TransferTest category: 'Portfolio-Solucion'!
 TestCase subclass: #TransferTest
@@ -593,9 +607,9 @@ rootParents
 	^ rootParents! !
 
 
-!Portfolio methodsFor: 'initialization' stamp: 'HAW 5/25/2019 12:03:18'!
+!Portfolio methodsFor: 'initialization' stamp: 'cielo 10/26/2023 15:35:27'!
 initialize
-
+	name:= ''.
 	accounts := OrderedCollection new.
 	parents := OrderedCollection new.! !
 
@@ -673,15 +687,15 @@ signalCanNotAddAccount
 addTransactionsToSumary: anAccountSumary 
 	self transactions do: [:transaction | transaction printFor: anAccountSumary ].! !
 
-!Portfolio methodsFor: 'reports' stamp: 'cielo 10/26/2023 00:04:59'!
+!Portfolio methodsFor: 'reports' stamp: 'cielo 10/26/2023 15:29:17'!
 nameOf
 	^name! !
 
-!Portfolio methodsFor: 'reports' stamp: 'cielo 10/26/2023 00:18:16'!
+!Portfolio methodsFor: 'reports' stamp: 'cielo 10/26/2023 15:07:02'!
 printTreeReportFor: treeReport
 	
-	treeReport addName: name.
-	accounts do: [:account | account printTreeFor: treeReport ].! !
+	treeReport addNamePortfolio: name.
+	accounts do: [:account | account printTreeReportFor: treeReport ].! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -723,7 +737,7 @@ with: account named: aName
 
 !classDefinition: #ReceptiveAccount category: 'Portfolio-Solucion'!
 Account subclass: #ReceptiveAccount
-	instanceVariableNames: 'transactions name'
+	instanceVariableNames: 'transactions'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Portfolio-Solucion'!
@@ -797,6 +811,13 @@ accountSummary
 !ReceptiveAccount methodsFor: 'composition' stamp: 'HAW 5/25/2019 12:03:32'!
 addedTo: aPortfolio 
 	
+	! !
+
+!ReceptiveAccount methodsFor: 'composition' stamp: 'cielo 10/26/2023 15:08:08'!
+printTreeReportFor: aReport
+
+	aReport addNameAccount: name.
+
 	! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
@@ -1240,7 +1261,7 @@ theReceivingAndSendingAccountCanNotBeTheSame
 
 !classDefinition: #TreeReport category: 'Portfolio-Solucion'!
 Object subclass: #TreeReport
-	instanceVariableNames: 'portfolio report'
+	instanceVariableNames: 'portfolio report space'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Portfolio-Solucion'!
@@ -1250,13 +1271,26 @@ for: aPortfolio
 
 	portfolio := aPortfolio ! !
 
-!TreeReport methodsFor: 'as yet unclassified' stamp: 'cielo 10/26/2023 00:14:19'!
+!TreeReport methodsFor: 'as yet unclassified' stamp: 'cielo 10/26/2023 15:33:43'!
 printReport
 
 	report := OrderedCollection new.
+	space := ''.
 	portfolio printTreeReportFor: self.
 	
 	^report! !
+
+
+!TreeReport methodsFor: 'name' stamp: 'cielo 10/26/2023 15:24:58'!
+addNameAccount: aName 
+	
+	report add: (space, aName) .! !
+
+!TreeReport methodsFor: 'name' stamp: 'cielo 10/26/2023 15:33:34'!
+addNamePortfolio: aName
+	
+	report add: (space, aName).
+	space:= (space, ' ').! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
