@@ -701,9 +701,9 @@ signalCanNotAddAccount
 	self error: self class canNotAddAccountErrorMessage! !
 
 
-!Portfolio methodsFor: 'reports' stamp: 'Alex 10/26/2023 16:22:13'!
-addTransactionsToReport: anAccountSumary 
-	self transactions do: [:transaction | transaction printFor: anAccountSumary ].
+!Portfolio methodsFor: 'reports' stamp: 'Alexandra 10/26/2023 17:03:32'!
+addTransactionsToReport: aReport 
+	accounts do: [:account | account addTransactionsToReport: aReport].
 ! !
 
 !Portfolio methodsFor: 'reports' stamp: 'Alex 10/26/2023 16:21:31'!
