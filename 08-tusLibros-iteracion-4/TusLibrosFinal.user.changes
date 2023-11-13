@@ -447,3 +447,98 @@ PASSED!
 ----SNAPSHOT----(13 November 2023 00:21:08) TusLibrosFinal.image priorSource: 11626766!
 
 ----SNAPSHOT----(13 November 2023 00:21:13) TusLibrosFinal.image priorSource: 12086527!
+
+----STARTUP---- (13 November 2023 16:10:01) as C:\Users\alexa\OneDrive\Documents\Universidad\Ingenieria de software I\smaltalk tusLibros\TusLibrosFinal.image!
+
+
+----End fileIn of C:\Users\alexa\OneDrive\Documents\Universidad\Ingenieria de software I\smaltalk tusLibros\TusLibrosREST.st----!
+
+----End fileIn of C:\Users\alexa\OneDrive\Documents\Universidad\Ingenieria de software I\smaltalk tusLibros\TusLibros-Model Ejercicio it4.st----!
+
+----End fileIn of C:\Users\alexa\OneDrive\Documents\Universidad\Ingenieria de software I\smaltalk tusLibros\TusLibrosREST Ejercicio it4.st----!
+
+----End fileIn of C:\Users\alexa\OneDrive\Documents\Universidad\Ingenieria de software I\smaltalk tusLibros\TusLibros-Tests Ejercicio it4.st----!
+
+----End fileIn of C:\Users\alexa\OneDrive\Documents\Universidad\Ingenieria de software I\smaltalk tusLibros\WebClient.pck.st----!
+
+TusLibrosServerRestInterface installForDefaultSystem!
+
+TusLibrosClientTestWindow open!
+!TusLibrosClientRestInterface methodsFor: 'initialization' stamp: 'ayc 11/13/2023 16:19:04' prior: 50709692!
+handleRequest: requestName fromDict:  fieldDict 
+
+	[|resp|
+
+	resp := WebClient htmlSubmit: (self url, requestName) fields: fieldDict.
+		
+	resp isSuccess 
+		ifTrue:[^(WebUtils jsonDecode: ((resp content) readStream)) asOrderedCollection] 
+		ifFalse:[self triggerEvent: #thereWasAnError withArguments: resp content.
+			^self error: resp content]] fork! !
+
+TusLibrosClientTestWindow open!
+!TusLibrosClientTestWindow methodsFor: 'initialization' stamp: 'ayc 11/13/2023 16:28:37' prior: 50711318!
+initializeWith: aTitle
+
+	self setLabel: aTitle.
+	self model: (TusLibrosClientTestWindowModel new).
+	self morphExtent: (self defaultExtent).
+	self buildMorphicWindow.
+	self openInWorld.
+			
+	self model when: #newCartIdArrived send: #refreshListOfCartIds to: self.		
+	self model when: #selectedCartChanged send: #refreshCartButtonsLabels: to: self.	
+	self model when: #bookAddedToCart send: #informBook:addedToCart: to: self.
+	self model when: #bookAddedToCart send: #informBook:addedToCart: to: self.
+	self model when: #newCurrentSelectedCartContentArrived send: #refreshCurrentSelectedCartContent: to: self! !
+!TusLibrosClientRestInterface methodsFor: 'initialization' stamp: 'ayc 11/13/2023 16:28:54' prior: 50721645!
+handleRequest: requestName fromDict:  fieldDict 
+
+	[|resp|
+
+	resp := WebClient htmlSubmit: (self url, requestName) fields: fieldDict.
+		
+	resp isSuccess 
+		ifTrue:[^(WebUtils jsonDecode: ((resp content) readStream))] 
+		ifFalse:[self triggerEvent: #thereWasAnError withArguments: resp content.
+			^self error: resp content]] fork! !
+!TusLibrosClientTestWindow methodsFor: 'initialization' stamp: 'ayc 11/13/2023 16:29:13' prior: 50721661!
+initializeWith: aTitle
+
+	self setLabel: aTitle.
+	self model: (TusLibrosClientTestWindowModel new).
+	self morphExtent: (self defaultExtent).
+	self buildMorphicWindow.
+	self openInWorld.
+			
+	self model when: #newCartIdArrived send: #refreshListOfCartIds to: self.		
+	self model when: #selectedCartChanged send: #refreshCartButtonsLabels: to: self.	
+	self model when: #bookAddedToCart send: #informBook:addedToCart: to: self.
+	self model when: #thereWasAnError send: #informBook:addedToCart: to: self.
+	self model when: #newCurrentSelectedCartContentArrived send: #refreshCurrentSelectedCartContent: to: self! !
+!TusLibrosClientTestWindow methodsFor: 'initialization' stamp: 'ayc 11/13/2023 16:30:19' prior: 50721698!
+initializeWith: aTitle
+
+	self setLabel: aTitle.
+	self model: (TusLibrosClientTestWindowModel new).
+	self morphExtent: (self defaultExtent).
+	self buildMorphicWindow.
+	self openInWorld.
+			
+	self model when: #newCartIdArrived send: #refreshListOfCartIds to: self.		
+	self model when: #selectedCartChanged send: #refreshCartButtonsLabels: to: self.	
+	self model when: #bookAddedToCart send: #informBook:addedToCart: to: self.
+	self model when: #thereWasAnError send: #informError: to: self.
+	self model when: #newCurrentSelectedCartContentArrived send: #refreshCurrentSelectedCartContent: to: self! !
+!TusLibrosClientTestWindow methodsFor: 'events' stamp: 'ayc 11/13/2023 16:31:56'!
+informError: anError
+
+	self inform: 'you ran into an error: ', anError! !
+
+TusLibrosClientTestWindow open!
+
+WebServer reset!
+
+----SNAPSHOT----(13 November 2023 16:32:59) TusLibrosFinal.image priorSource: 12086616!
+
+----QUIT----(13 November 2023 16:33:03) TusLibrosFinal.image priorSource: 12483164!
